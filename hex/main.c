@@ -95,17 +95,12 @@ void init_sys(void){
 }
 
 void heater(int flag){
-	
-	char outro[] = "\nentra na func\n";
-	
 	if (flag == 0){
 		PORTCbits.RC5 = 0;	// heater OFF
 	}
 	if (flag == 1){
 		PORTCbits.RC5 = 1;	// heater ON
 	}
-	
-	uart_writeText(outro);
 }
 
 ////******************************
@@ -153,39 +148,53 @@ int main(void){
 	
 	while (1){
 
-		////
-		aux = PORTCbits.RC0;
-		sprintf(buffer, "Impulsos= %d \n" , aux);
-		uart_writeText(buffer);
-		delayin(3000);
-		///
+		// //
+		// aux = PORTCbits.RC0;
+		// sprintf(buffer, "Impulsos= %d \n" , aux);
+		// uart_writeText(buffer);
+		// delayin(3000);
+		// /
 		
 		read_all();
 		buffer[0] = '\0';
 
 		
 		if (!PORTBbits.RB3){		// RB3 button pressed
-			delayin(2000);
-			if(heater_flag){
+			
+			while (!PORTBbits.RB3){
+				delayin(2000);
+			}
+			
+			if(heater_flag==1){
 				heater_flag =0;
 				heater(heater_flag);
 			}
+			
 			else{
 				heater_flag =1;
 				heater(heater_flag);
+			}			
+		}
+
+		if (!PORTBbits.RB4){
+
+			while (!PORTBbits.RB4){
+			delayin(2000);
 			}
 			
-			
+			buffer[0] = '\0';
 			sprintf(buffer, "Temperature= %d \n" , s.temperatura);
 			uart_writeText(buffer);
 			delayin(3000);
 
 			buffer[0] = '\0';
-
 			sprintf(buffer, "Humidity= %d \n" , s.humidade);
 			uart_writeText(buffer);
 			delayin(3000);
-		}		
+			
+		}
+
+		
 	}
 	
 }
