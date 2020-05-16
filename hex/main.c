@@ -1,5 +1,10 @@
 #include <xc.h>
-#include <stdio.h>         // for sprintf
+#include <stdio.h>
+#include <stdlib.h>
+
+//Custom .h
+#include "adc.h"
+#include "uart.h"
 
 #pragma config FOSC = HS // Oscillator Selection bits (HS oscillator)
 #pragma config WDTE = OFF // Watchdog Timer Enable bit
@@ -31,124 +36,6 @@ void delayin(long int t){
 	for(i; i<t ;i++)
 		;
 }
-
-
-
-// ***** UART FUNCTIONS
-////*****************
-
-//uart2 initialization 
-//input: none
-//output: none
-void uart_init (void){
-	
-	//Assinchcronous 8 bit -> high speed
-	BRGH = 1; 	  //high speed
-	SPBRG = 25;   //BR = 9600 at Fosc = 4 MHz
-	SYNC  = 0;    // Asynchronous
-    SPEN  = 1;    // Enable serial port pins
-	
-	//**Select 8-bit mode**//  
-    TX9   = 0;    // 8-bit reception selected
-    RX9   = 0;    // 8-bit reception mode selected
-	
-	//**Transmission & reception**//
-	CREN = 1;     //Enables Continuous Reception
-    TXEN = 1;     //Enables Transmission
-	
-}
-
-//write char to uart
-//input: char you want to write in the console
-//output: none (writes to console)
-void uart_writeChar(char ch){
-	
-	// TRMT: Transmit Shift Register Status bit
-	// 1 = TSR empty
-	// 0 = TSR full
-	
-  while(!TRMT);
-  TXREG=ch;
-	
-}
-
-//write text
-//input: string you want to write in the console
-//output: none (writes to console)
-void uart_writeText(char *str){
-	int i;
-	for(i=0; str[i] != '\0' ; i++){ 			
-		uart_writeChar(str[i]);
-	}
-}
-
-//read char
-//input: none
-//output: readed char
-char uart_read(void){
-	
-	/*
-	RCIF: USART Receive Interrupt Flag bit
-	1 = The USART receive buffer is full
-	0 = The USART receive buffer is empty
-	*/
-	
-	while(!RCIF);
-	return RCREG;
-	
-}
-
-//read string/text
-//input: string to store readed value
-//output: none
-void uart_readText(char *str){
-	
-	int i=0;
-	str[i] = uart_read(); 
-	
-	while(str[i] != '\n' && str[i] != '\0' && str[i]!= '\r'){
-		i++;
-		str[i]=uart_read();
-	}
-	str[i]='\0'; //adding the end of string
-				 // (no need to return since it's string -> writing directly in the memory)
-}
-
-////*****************
-////*****************
-
-
-
-// ***** ADC FUNCTIONS
-////*****************
-
-//adc initialization
-//input: none
-//output: none
-void adcInit(void){
-	ADCON0=0;						// sampling freq=osc_freq/2,ADC off initially;
-	ADCON1=0;						// all pins as analog
-	ADCON0bits.ADON=1;				// ADC ON
-}
-
-//digital (read) and convertition to analog
-//input: int -> channel to read
-//output: measured value in digital
-int adc_read(int channel){
-	ADCON1bits.ADFM =1;							// right shifted results
-	
-	ADCON0bits.CHS=channel;						// get channel to convert
-	
-	ADCON0bits.GO_nDONE=1;           			// Start ADC conversion
-	while(ADCON0bits.GO_nDONE);            		// Wait for the conversion to complete
-												// GO_DONE bit will be cleared once conversion is complete
-
-	return((ADRESH<<8) + ADRESL);  				// return right justified 10-bit result
-												//ADRESH -> A/D Result High Register
-												//ADRESL -> A/D Result Low Register 													
-}
-////*********************
-// **********************
 
 
 // ***** GENERAL PURPOSE FUNCTIONS
@@ -227,7 +114,7 @@ void heater(int flag){
 // ***** READ DATA
 ////**************
 void temp_read(void){
-	s.temperatura = (5* adc_read(2) * 100/1023);
+	s.temperatura = adc_read(2);
 }
 
 void vento_read(void){
@@ -248,7 +135,7 @@ void read_all(void){
 
 ////**************
 ////**************
-
+ 
 
 
 int main(void){
