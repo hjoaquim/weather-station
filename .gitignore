@@ -1,3 +1,17 @@
+#hex files from compilation
+*.d
+*.p1
+*.pre
+*.as
+*.hex
+*.sdb
+*.sym
+*.rlf
+*.lst
+*.obj
+*.elf
+
+
 # Prerequisites
 *.d
 
