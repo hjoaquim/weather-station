@@ -109,7 +109,10 @@ void heater(int flag){
 // ***** READ DATA
 ////**************
 void temp_read(void){
-	s.temperatura = adc_read(2);
+	int x,y;
+	x = adc_read(2);
+	y=(0.4814*x+0.4706);
+	s.temperatura = y;
 }
 
 void vento_read(void){
