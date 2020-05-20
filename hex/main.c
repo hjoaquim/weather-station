@@ -6,6 +6,7 @@
 #include "adc.h"
 #include "uart.h"
 #include "pwm.h"
+#include "timer0.h"
 
 #pragma config FOSC = HS // Oscillator Selection bits (HS oscillator)
 #pragma config WDTE = OFF // Watchdog Timer Enable bit
@@ -20,11 +21,18 @@ typedef struct _Data{
 	
 	int temperatura;
 	int humidade;
-	int v_vento;
+	int v_wind;
 	
 } Data;
 
 Data s;
+
+typedef struct _Wind{
+	int n_pulse;					//n of pulses
+	int time_counter;				//time
+} Wind;
+
+Wind wind;
 
 
 void delayin(long int t){
@@ -43,7 +51,9 @@ void init_sys(void){
 	uart_init();
 	adcInit();
 	pwm_init();
+	timer0_init();
 	
+	TRISBbits.TRISB4 = 1; 			// RB4 button
 	TRISBbits.TRISB3 = 1; 			// RB3 button
 	TRISCbits.TRISC5 = 0; 			// define RC5 (heater) as output
 	
@@ -53,8 +63,11 @@ void init_sys(void){
 	PORTCbits.RC2 = 1;				// ventoinha ON
 	
 	s.temperatura = 0;
-	s.v_vento = 0;
+	s.v_wind = 0;
 	s.humidade =0;
+	
+	wind.n_pulse =0;
+	wind.time_counter =0;
 	
 }
 
@@ -81,6 +94,19 @@ void temp_read(void){
 
 void wind_read(void){
 	
+	if(PORTCbits.RC0)
+		wind.n_pulse++;
+	
+	while(!T0IF); // is true when overflow at 256 --> 15 of these equal to 1 sec
+	T0IF = 0;
+	wind.time_counter ++; 
+
+	if(wind.time_counter == 60*15){	// after 1 minute!
+		
+		s.v_wind = wind.n_pulse;
+		wind.time_counter = 0;
+		wind.n_pulse =0;
+	}
 }
 
 void hum_read(void){
@@ -143,19 +169,24 @@ int main(void){
 			}			
 		}
 
-		if (!PORTBbits.RB4){
+		if (!PORTBbits.RB4){	// RB4 button pressed
 
 			while (!PORTBbits.RB4){
 			delayin(2000);
 			}
 			
 			buffer[0] = '\0';
-			sprintf(buffer, "Temperature= %d \n" , s.temperatura);
+			sprintf(buffer, "Temperature = %d \n" , s.temperatura);
 			uart_writeText(buffer);
 			delayin(3000);
 
 			buffer[0] = '\0';
-			sprintf(buffer, "Humidity= %d %%\n" , s.humidade);
+			sprintf(buffer, "Humidity = %d %%\n" , s.humidade);
+			uart_writeText(buffer);
+			delayin(3000);
+			
+			buffer[0] = '\0';
+			sprintf(buffer, "Wind velocity = %d RPM\n\n" , s.v_wind);
 			uart_writeText(buffer);
 			delayin(3000);
 			
