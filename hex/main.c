@@ -141,6 +141,8 @@ int main(void){
 	
 	while (1){
 
+
+		// OLAAAAAA IIRRRRRRISSSSSSSSSSSSS
 		// // OLAAAAAAAAAA
 		// aux = PORTCbits.RC0;
 		// sprintf(buffer, "Impulsos= %d \n" , aux);
