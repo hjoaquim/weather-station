@@ -141,7 +141,7 @@ int main(void){
 	
 	while (1){
 
-		// //
+		// // OLAAAAAAAAAA
 		// aux = PORTCbits.RC0;
 		// sprintf(buffer, "Impulsos= %d \n" , aux);
 		// uart_writeText(buffer);
