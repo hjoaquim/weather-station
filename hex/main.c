@@ -18,11 +18,13 @@
 #pragma config WRT = OFF // Flash Program Memory Write Enable bits
 #pragma config CP = OFF // Flash Program Memory Code Protection bit
 
+#define STR_MAX 50
+
 typedef struct _Data{
 	
-	int temperatura;
-	int humidade;
-	int v_wind;
+	int temperature;
+	int humidity;
+	int wind;
 	
 } Data;
 
@@ -63,9 +65,9 @@ void init_sys(void){
 	TRISCbits.TRISC2 = 0;           // ventoinha as output
 	PORTCbits.RC2 = 1;				// ventoinha ON
 	
-	s.temperatura = 0;
-	s.v_wind = 0;
-	s.humidade =0;
+	s.temperature = 0;
+	s.wind = 0;
+	s.humidity =0;
 	
 	wind.n_pulse =0;
 	wind.time_counter =0;
@@ -82,36 +84,54 @@ void heater(int flag){
 }
 
 
-void isRisk(int temp, int hum, int wvel){
-	
-	Data risk;
-	char buff[];
-	
-	if( s.temperatura > temp && s.humidade < hum && s.v_wind > wvel ){
-		
-		// activate a LED to sinalize
-		
-		sprintf(buffer, "Risk situation detected. Temperature above: %d\nHumidity below: %d\nWind velocity above: %d\n" , temp,hum,wvel);
-		uart_writeText(buffer);
-		delayin(3000);
-		
-		sendMsg2();
-		
-	}
-	
-}
-
-
-
-//send risk situation
-void sendMsg2(void){
-	
-	
-}
 
 // send updates with temperature, humidity and wind velocity to MR
 // send update each minute
 void sendMsg1(void){
+	char msg[STR_MAX];
+	
+	addNewline();
+	msg[0] = '\0';
+	
+	sprintf(msg, "%d" , s.temperature);
+	uart_writeText(msg);
+	delayin(300);
+	
+	addNewline();
+	
+	msg[0] = '\0';
+	sprintf(msg, "%d" , s.humidity);
+	uart_writeText(msg);
+	delayin(300);
+	
+	addNewline();
+	
+	msg[0] = '\0';
+	sprintf(msg, "%d" , s.wind);
+	uart_writeText(msg);
+	delayin(300);
+
+	
+	
+	
+}
+
+// detect risk situation accordingly with the limit values provided
+void isRisk(int temp, int hum, int wvel){
+	
+	char buff[STR_MAX];
+	
+	if( s.temperature > temp && s.humidity < hum && s.wind > wvel ){
+		
+		// activate a LED to sinalize
+		
+		sprintf(buff, "Risk situation detected. Temperature above: %d\nHumidity below: %d\nWind velocity above: %d\n" , temp,hum,wvel);
+		uart_writeText(buff);
+		delayin(3000);
+		
+		sendMsg1(); //send the same as in the msg1 but imidiately since it's a risk situation
+		
+	}
 	
 }
 
@@ -124,7 +144,7 @@ void temp_read(void){
 	int x,y;
 	x = adc_read(2);
 	y=(0.4814*x+0.4706);
-	s.temperatura = y;
+	s.temperature = y;
 }
 
 void wind_read(void){
@@ -132,20 +152,22 @@ void wind_read(void){
 	if(PORTCbits.RC0)
 		wind.n_pulse++;
 	
-	while(!T0IF); // is true when overflow at 256 --> 15 of these equal to 1 sec
+	while(!T0IF); 						// is true when overflow at 256 --> 15 of these equal to 1 sec
 	T0IF = 0;
 	wind.time_counter ++; 
 
-	if(wind.time_counter == 60*15){	// after 1 minute!
+	if(wind.time_counter == 60*15){		// after 1 minute!
 		
-		s.v_wind = wind.n_pulse;
+		sendMsg1(); 					//send the update each minute				
+		
+		s.wind = wind.n_pulse;
 		wind.time_counter = 0;
 		wind.n_pulse =0;
 	}
 }
 
 void hum_read(void){
-	s.humidade = (0.09862*adc_read(1));
+	s.humidity = (0.09862*adc_read(1));
 }
 
 void read_all(void){
@@ -166,19 +188,12 @@ int main(void){
 	init_sys();
 	int heater_flag = 0;
 	
-	char str_aux[] = "\nHello world!\n";
-	
-	char buffer[];
-
+	char str_aux[STR_MAX] = "\nHello world!\n";
 	uart_writeText(str_aux);
-	
-	int aux=0;
 	
 	while (1){
 		
 		read_all();
-		buffer[0] = '\0';
-
 		
 		if (!PORTBbits.RB3){		// RB3 button pressed
 			
@@ -196,31 +211,5 @@ int main(void){
 				heater(heater_flag);
 			}			
 		}
-
-		if (!PORTBbits.RB4){	// RB4 button pressed
-
-			while (!PORTBbits.RB4){
-			delayin(2000);
-			}
-			
-			buffer[0] = '\0';
-			sprintf(buffer, "Temperature = %d \n" , s.temperatura);
-			uart_writeText(buffer);
-			delayin(3000);
-
-			buffer[0] = '\0';
-			sprintf(buffer, "Humidity = %d %%\n" , s.humidade);
-			uart_writeText(buffer);
-			delayin(3000);
-			
-			buffer[0] = '\0';
-			sprintf(buffer, "Wind velocity = %d RPM\n\n" , s.v_wind);
-			uart_writeText(buffer);
-			delayin(3000);
-			
-		}
-
-		
 	}
-	
 }
