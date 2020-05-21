@@ -1,6 +1,7 @@
 #include <xc.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //Custom .h
 #include "adc.h"
@@ -78,6 +79,40 @@ void heater(int flag){
 	if (flag == 1){
 		PORTCbits.RC5 = 1;	// heater ON
 	}
+}
+
+
+void isRisk(int temp, int hum, int wvel){
+	
+	Data risk;
+	char buff[];
+	
+	if( s.temperatura > temp && s.humidade < hum && s.v_wind > wvel ){
+		
+		// activate a LED to sinalize
+		
+		sprintf(buffer, "Risk situation detected. Temperature above: %d\nHumidity below: %d\nWind velocity above: %d\n" , temp,hum,wvel);
+		uart_writeText(buffer);
+		delayin(3000);
+		
+		sendMsg2();
+		
+	}
+	
+}
+
+
+
+//send risk situation
+void sendMsg2(void){
+	
+	
+}
+
+// send updates with temperature, humidity and wind velocity to MR
+// send update each minute
+void sendMsg1(void){
+	
 }
 
 ////******************************
