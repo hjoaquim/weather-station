@@ -52,6 +52,7 @@ void init_sys(void){
 	adcInit();
 	pwm_init();
 	timer0_init();
+	timer1_init();
 	
 	TRISBbits.TRISB4 = 1; 			// RB4 button
 	TRISBbits.TRISB3 = 1; 			// RB3 button
@@ -94,9 +95,10 @@ void temp_read(void){
 
 void wind_read(void){
 	
-	if(PORTCbits.RC0)
-		wind.n_pulse++;
+	// if(PORTCbits.RC0)
+		// wind.n_pulse++;
 	
+<<<<<<< HEAD
 	while(!T0IF); // is true when overflow at 256 --> 15 of these equal to 1 sec
 	T0IF = 0;
 	wind.time_counter ++; 
@@ -107,6 +109,23 @@ void wind_read(void){
 		wind.time_counter = 0;
 		wind.n_pulse =0;
 	}
+=======
+	// while(!T0IF); 						// is true when overflow at 256 --> 15 of these equal to 1 sec
+	// T0IF = 0;
+	// wind.time_counter ++; 
+
+	// if(wind.time_counter == 58*15){		// after 1 minute!
+		
+		// s.wind = wind.n_pulse;
+		// sendMsg1(); 					//send the update each minute				
+
+		// wind.time_counter = 0;
+		// wind.n_pulse =0;
+	// }
+	
+	s.wind = ((TMR1H<<8) + TMR1L);
+	sendMsg1(); 
+>>>>>>> parent of 4d38224... Revert "interrupt"
 }
 
 void hum_read(void){
@@ -129,6 +148,7 @@ void read_all(void){
 int main(void){
 
 	init_sys();
+	INTCONbits.GIE = 1; // global interrupt enable
 	int heater_flag = 0;
 	
 	char str_aux[] = "\nHello world!\n";
@@ -151,8 +171,12 @@ int main(void){
 		// /
 		
 		read_all();
+<<<<<<< HEAD
 		buffer[0] = '\0';
 
+=======
+		isRisk(35,30,430);
+>>>>>>> parent of 4d38224... Revert "interrupt"
 		
 		if (!PORTBbits.RB3){		// RB3 button pressed
 			
@@ -196,5 +220,40 @@ int main(void){
 
 		
 	}
+<<<<<<< HEAD
 	
 }
+=======
+}
+
+
+
+
+
+
+void __interrupt() isr() {
+	if(TMR0IF == 1){
+		TMR0IF=0;
+		wind.time_counter++;
+		
+		if(wind.time_counter == 60*15){
+			wind.time_counter=0;
+			wind_read();
+			
+			TMR1=0;
+			TMR0=0;
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> parent of 4d38224... Revert "interrupt"
