@@ -219,7 +219,7 @@ int main(void){
 
 
 
-// void __interrupt() isr() {
+// void __interrupt() interrupt_service() {
 	// if(TMR0IF == 1){
 		// TMR0IF=0;
 		// wind.time_counter++;
