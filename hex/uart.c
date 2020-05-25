@@ -86,5 +86,3 @@ void addNewline(void) {
     uart_writeChar('\n');
 	uart_writeChar('\r');
 }
-
-
