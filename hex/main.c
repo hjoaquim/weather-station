@@ -29,6 +29,7 @@ typedef struct _Data{
 } Data;
 
 Data s;
+Data last_risk;
 
 typedef struct _Wind{
 	int n_pulse;					//n of pulses
@@ -72,6 +73,10 @@ void init_sys(void){
 	wind.n_pulse =0;
 	wind.time_counter =0;
 	
+	last_risk.temperature = 0;
+	last_risk.wind = 0;
+	last_risk.humidity =0;
+	
 }
 
 void heater(int flag){
@@ -92,47 +97,36 @@ void sendMsg1(void){
 	
 	addNewline();
 	msg[0] = '\0';
-	
-	sprintf(msg, "%d" , s.temperature);
+	sprintf(msg,"{ \"T\" : %d, \"H\" : %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
 	uart_writeText(msg);
 	delayin(300);
-	
-	addNewline();
-	
-	msg[0] = '\0';
-	sprintf(msg, "%d" , s.humidity);
-	uart_writeText(msg);
-	delayin(300);
-	
-	addNewline();
-	
-	msg[0] = '\0';
-	sprintf(msg, "%d" , s.wind);
-	uart_writeText(msg);
-	delayin(300);
+}
 
+void sendMsg2(void){
+	char msg[STR_MAX];
 	
-	
-	
+	addNewline();
+	msg[0] = '\0';
+	sprintf(msg,"{ \"Warning\" : 1, \"T\" : %d, \"H\" : %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
+	uart_writeText(msg);
+	delayin(300);
 }
 
 // detect risk situation accordingly with the limit values provided
 void isRisk(int temp, int hum, int wvel){
-	
-	char buff[STR_MAX];
-	
 	if( s.temperature > temp && s.humidity < hum && s.wind > wvel ){
-		
-		// activate a LED to sinalize
-		
-		sprintf(buff, "Risk situation detected. Temperature above: %d\nHumidity below: %d\nWind velocity above: %d\n" , temp,hum,wvel);
-		uart_writeText(buff);
-		delayin(3000);
-		
-		sendMsg1(); //send the same as in the msg1 but imidiately since it's a risk situation
-		
+		if(last_risk.temperature != s.temperature || last_risk.humidity != s.humidity || last_risk.wind != s.wind){
+			
+			// activate a LED and/or buzzer to sinalize
+
+			sendMsg2(); //send the same as in the msg1 but imidiately since it's a risk situation
+			
+			last_risk.temperature = s.temperature;
+			last_risk.humidity = s.humidity ;
+			last_risk.wind = s.wind;
+		}
 	}
-	
+	//deactivate LED if there is any risk
 }
 
 ////******************************
@@ -156,11 +150,11 @@ void wind_read(void){
 	T0IF = 0;
 	wind.time_counter ++; 
 
-	if(wind.time_counter == 60*15){		// after 1 minute!
-		
-		sendMsg1(); 					//send the update each minute				
+	if(wind.time_counter == 58*15){		// after 1 minute!
 		
 		s.wind = wind.n_pulse;
+		sendMsg1(); 					//send the update each minute				
+
 		wind.time_counter = 0;
 		wind.n_pulse =0;
 	}
@@ -194,6 +188,7 @@ int main(void){
 	while (1){
 		
 		read_all();
+		isRisk(35,30,440);
 		
 		if (!PORTBbits.RB3){		// RB3 button pressed
 			
