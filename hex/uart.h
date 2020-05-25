@@ -6,6 +6,5 @@
 	void uart_writeText(char *str);
 	char uart_read(void);
 	void uart_readText(char *str);
-	void addNewline(void);
 
 #endif

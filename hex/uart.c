@@ -80,11 +80,3 @@ void uart_readText(char *str){
 	str[i]='\0'; //adding the end of string
 				 // (no need to return since it's string -> writing directly in the memory)
 }
-
-
-void addNewline(void) {
-    uart_writeChar('\n');
-	uart_writeChar('\r');
-}
-
-
