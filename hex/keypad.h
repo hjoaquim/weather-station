@@ -5,5 +5,6 @@
 void initKeypad();
 char pressedKey();
 char keypadScanner();
+int password();
 #endif // !KEYPAD_H
 

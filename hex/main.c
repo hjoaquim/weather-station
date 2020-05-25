@@ -65,6 +65,13 @@ void init_sys(void){
 	TRISCbits.TRISC0 = 1;			// sensor infra-vermelho -> contador de impulsos -> velocidade da ventoinha
 	TRISCbits.TRISC2 = 0;           // ventoinha as output
 	PORTCbits.RC2 = 1;				// ventoinha ON
+
+
+	OPTION_REG = 0b00000000;
+	INTCON.INTE = 1; // Enable external interrupts from RB0
+	INTCON.PEIE = 1; //enable peripheral inputs
+	INTCON.GIE = 1; // Global interrupt enable
+	TRISBbits.RB0 = 1; //setting RB0 as an input
 	
 	s.temperature = 0;
 	s.wind = 0;
@@ -174,6 +181,26 @@ void read_all(void){
 
 ////**************
 ////**************
+
+////****INTERRUPT
+/////*************
+
+void __interrupt() interrupt_service() {
+	char msg[] = "\nExternal Interrupt Initiated\n"
+
+	if (INTCON.INTF == 1) {
+
+		//por o necessario dentro do interrupt
+		uart_writeText(msg);
+
+
+
+
+		INTCON.INTF = 0;
+	}
+
+
+}
  
 
 

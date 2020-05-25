@@ -4,6 +4,7 @@
 
 
 #include "keypad.h"
+#include "uart.h"
 
 void initKeypad() {
 
@@ -111,4 +112,26 @@ char pressedKey() {
 	while (key == 'n')
 		key = keypadScanner();
 	return key;
+}
+
+
+int password() {
+	char pw[5];
+	int i;
+
+	initKeypad();
+	
+	for (i = 0; i < 4; i++) {
+		pw[i] = pressedKey();
+	}
+	pw[4] = '\0';
+
+	if (strcmp(pw, user_input)) {
+
+		uart_writeText(str_conf);
+		delayin(1000);
+		flag = 1;
+
+	}//falta terminar
+
 }
