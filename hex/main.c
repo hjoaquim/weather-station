@@ -65,11 +65,9 @@ void init_sys(void){
 
 	TRISBbits.TRISB0 = 1;			//RB0 button as input
 	INTCONbits.GIE = 1;				//enable global interrupt
-	INTCONbits.INTF = 0;
 	INTCONbits.INTE = 1;			//enable external interrupt
 	INTCONbits.PEIE = 1;			//enable peripheral interrupt
-	OPTION_REG = 0;					//enable pin RB0 as an external interrupt
-
+	OPTION_REG= 0b00000000;		//enable pin RB0 as an external interrupt
 	
 	s.temperatura = 0;
 	s.v_wind = 0;
@@ -136,17 +134,20 @@ void read_all(void){
 ////****INTERRUPT
 ////**********************
 
-void __interrupt() interrupt_service() {
-	char buffer[] = "\nInterrupt service routine started!!!!\n";
+void interrupt interrupt_service() {
+	char buffer[];
 
-	//este codigo tem um erro !!!!!!!!!!!!!!
+	buffer[0] = '\0';
+		sprintf(buffer, "\nInterrupt service routine FAILED!!!!\n");
+		uart_writeText(buffer);
 
 	if (INTCONbits.INTF == 1) {//detetado um interrupt externo-->flag
 
+		buffer[0] = '\0';
+		sprintf(buffer, "\nInterrupt service routine started!!!!\n");
 		uart_writeText(buffer);
 
 		//o que fazer dentro do interrupt????
-		//dar interrupt dos timers e serviços
 
 
 
