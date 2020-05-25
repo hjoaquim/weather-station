@@ -1,6 +1,7 @@
 #include <xc.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //Custom .h
 #include "adc.h"
@@ -17,15 +18,18 @@
 #pragma config WRT = OFF // Flash Program Memory Write Enable bits
 #pragma config CP = OFF // Flash Program Memory Code Protection bit
 
+#define STR_MAX 50
+
 typedef struct _Data{
 	
-	int temperatura;
-	int humidade;
-	int v_wind;
+	int temperature;
+	int humidity;
+	int wind;
 	
 } Data;
 
 Data s;
+Data last_risk;
 
 typedef struct _Wind{
 	int n_pulse;					//n of pulses
@@ -63,12 +67,16 @@ void init_sys(void){
 	TRISCbits.TRISC2 = 0;           // ventoinha as output
 	PORTCbits.RC2 = 1;				// ventoinha ON
 	
-	s.temperatura = 0;
-	s.v_wind = 0;
-	s.humidade =0;
+	s.temperature = 0;
+	s.wind = 0;
+	s.humidity =0;
 	
 	wind.n_pulse =0;
 	wind.time_counter =0;
+	
+	last_risk.temperature = 0;
+	last_risk.wind = 0;
+	last_risk.humidity =0;
 	
 }
 
@@ -81,6 +89,47 @@ void heater(int flag){
 	}
 }
 
+
+
+// send updates with temperature, humidity and wind velocity to MR
+// send update each minute
+void sendMsg1(void){
+	char msg[STR_MAX];
+	
+	addNewline();
+	msg[0] = '\0';
+	sprintf(msg,"{ \"T\" : %d, \"H\" : %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
+	uart_writeText(msg);
+	delayin(300);
+}
+
+void sendMsg2(void){
+	char msg[STR_MAX];
+	
+	addNewline();
+	msg[0] = '\0';
+	sprintf(msg,"{ \"Warning\" : 1, \"T\" : %d, \"H\" : %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
+	uart_writeText(msg);
+	delayin(300);
+}
+
+// detect risk situation accordingly with the limit values provided
+void isRisk(int temp, int hum, int wvel){
+	if( s.temperature > temp && s.humidity < hum && s.wind > wvel ){
+		if(last_risk.temperature != s.temperature || last_risk.humidity != s.humidity || last_risk.wind != s.wind){
+			
+			// activate a LED and/or buzzer to sinalize
+
+			sendMsg2(); //send the same as in the msg1 but imidiately since it's a risk situation
+			
+			last_risk.temperature = s.temperature;
+			last_risk.humidity = s.humidity ;
+			last_risk.wind = s.wind;
+		}
+	}
+	//deactivate LED if there is any risk
+}
+
 ////******************************
 ////******************************
 
@@ -90,7 +139,7 @@ void temp_read(void){
 	int x,y;
 	x = adc_read(2);
 	y=(0.4814*x+0.4706);
-	s.temperatura = y;
+	s.temperature = y;
 }
 
 void wind_read(void){
@@ -98,18 +147,6 @@ void wind_read(void){
 	// if(PORTCbits.RC0)
 		// wind.n_pulse++;
 	
-<<<<<<< HEAD
-	while(!T0IF); // is true when overflow at 256 --> 15 of these equal to 1 sec
-	T0IF = 0;
-	wind.time_counter ++; 
-
-	if(wind.time_counter == 60*15){	// after 1 minute!
-		
-		s.v_wind = wind.n_pulse;
-		wind.time_counter = 0;
-		wind.n_pulse =0;
-	}
-=======
 	// while(!T0IF); 						// is true when overflow at 256 --> 15 of these equal to 1 sec
 	// T0IF = 0;
 	// wind.time_counter ++; 
@@ -125,11 +162,10 @@ void wind_read(void){
 	
 	s.wind = ((TMR1H<<8) + TMR1L);
 	sendMsg1(); 
->>>>>>> parent of 4d38224... Revert "interrupt"
 }
 
 void hum_read(void){
-	s.humidade = (0.09862*adc_read(1));
+	s.humidity = (0.09862*adc_read(1));
 }
 
 void read_all(void){
@@ -151,32 +187,13 @@ int main(void){
 	INTCONbits.GIE = 1; // global interrupt enable
 	int heater_flag = 0;
 	
-	char str_aux[] = "\nHello world!\n";
-	
-	char buffer[];
-
+	char str_aux[STR_MAX] = "\nHello world!\n";
 	uart_writeText(str_aux);
 	
-	int aux=0;
-	
 	while (1){
-
-
-		//OLAAAAAA IIRRRRRRISSSSSSSSSSSSSssssssssssssssssssssssssssssssssssssssssssssss
-		// // OLAAAAAAAAAA
-		// aux = PORTCbits.RC0;
-		// sprintf(buffer, "Impulsos= %d \n" , aux);
-		// uart_writeText(buffer);
-		// delayin(3000);
-		// /
 		
 		read_all();
-<<<<<<< HEAD
-		buffer[0] = '\0';
-
-=======
 		isRisk(35,30,430);
->>>>>>> parent of 4d38224... Revert "interrupt"
 		
 		if (!PORTBbits.RB3){		// RB3 button pressed
 			
@@ -194,55 +211,6 @@ int main(void){
 				heater(heater_flag);
 			}			
 		}
-
-		if (!PORTBbits.RB4){	// RB4 button pressed
-
-			while (!PORTBbits.RB4){
-			delayin(2000);
-			}
-			
-			buffer[0] = '\0';
-			sprintf(buffer, "Temperature = %d \n" , s.temperatura);
-			uart_writeText(buffer);
-			delayin(3000);
-
-			buffer[0] = '\0';
-			sprintf(buffer, "Humidity = %d %%\n" , s.humidade);
-			uart_writeText(buffer);
-			delayin(3000);
-			
-			buffer[0] = '\0';
-			sprintf(buffer, "Wind velocity = %d RPM\n\n" , s.v_wind);
-			uart_writeText(buffer);
-			delayin(3000);
-			
-		}
-
-		
-	}
-<<<<<<< HEAD
-	
-}
-=======
-}
-
-
-
-
-
-
-void __interrupt() isr() {
-	if(TMR0IF == 1){
-		TMR0IF=0;
-		wind.time_counter++;
-		
-		if(wind.time_counter == 60*15){
-			wind.time_counter=0;
-			wind_read();
-			
-			TMR1=0;
-			TMR0=0;
-		}
 	}
 }
 
@@ -251,9 +219,17 @@ void __interrupt() isr() {
 
 
 
-
-
-
-
-
->>>>>>> parent of 4d38224... Revert "interrupt"
+// void __interrupt() isr() {
+	// if(TMR0IF == 1){
+		// TMR0IF=0;
+		// wind.time_counter++;
+		
+		// if(wind.time_counter == 60*15){
+			// wind.time_counter=0;
+			// wind_read();
+			
+			// TMR1=0;
+			// TMR0=0;
+		// }
+	// }
+// }
