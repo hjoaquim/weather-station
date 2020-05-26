@@ -8,6 +8,7 @@
 #include "uart.h"
 #include "pwm.h"
 #include "timer0.h"
+#include "keypad.h"
 
 #pragma config FOSC = HS // Oscillator Selection bits (HS oscillator)
 #pragma config WDTE = OFF // Watchdog Timer Enable bit
@@ -39,11 +40,7 @@ typedef struct _Wind{
 Wind wind;
 
 
-void delayin(long int t){
-	int i=0;
-	for(i; i<t ;i++)
-		;
-}
+
 
 
 // ***** GENERAL PURPOSE FUNCTIONS
@@ -68,12 +65,13 @@ void init_sys(void){
 	PORTCbits.RC2 = 1;				// ventoinha ON
 
 
+	TRISBbits.TRISB0 = 1; //setting RB0 as an input
+	INTCONbits.INTE = 1; // Enable external interrupts from RB0
+	INTCONbits.PEIE = 1; //enable peripheral inputs
+	INTCONbits.GIE = 1; // Global interrupt enable
 	OPTION_REG = 0b00000000;
-	INTCON.INTE = 1; // Enable external interrupts from RB0
-	INTCON.PEIE = 1; //enable peripheral inputs
-	INTCON.GIE = 1; // Global interrupt enable
-	TRISBbits.RB0 = 1; //setting RB0 as an input
-	
+
+
 	s.temperature = 0;
 	s.wind = 0;
 	s.humidity =0;
@@ -143,10 +141,11 @@ void isRisk(int temp, int hum, int wvel){
 // ***** READ DATA
 ////**************
 void temp_read(void){
-	int x,y;
+	int x;
+	float y;
 	x = adc_read(2);
-	y=(0.4814*x+0.4706);
-	s.temperature = y;
+	y=(0.4814*x + 0.4706);
+	s.temperature = (int)y;
 }
 
 void wind_read(void){
@@ -172,7 +171,7 @@ void wind_read(void){
 }
 
 void hum_read(void){
-	s.humidity = (0.09862*adc_read(1));
+	s.humidity = (int)(0.09862*adc_read(1));
 }
 
 void read_all(void){
@@ -190,17 +189,14 @@ void read_all(void){
 /////*************
 
 void __interrupt() interrupt_service() {
-	char msg[] = "\nExternal Interrupt Initiated\n"
+	char msg[] = "\nExternal Interrupt Initiated\n";
 
-	if (INTCON.INTF == 1) {
+	if (INTCONbits.INTF == 1) {
 
 		//por o necessario dentro do interrupt
 		uart_writeText(msg);
 
-
-
-
-		INTCON.INTF = 0;
+		INTCONbits.INTF = 0;
 	}
 
 
@@ -211,11 +207,13 @@ void __interrupt() interrupt_service() {
 int main(void){
 
 	init_sys();
-	INTCONbits.GIE = 1; // global interrupt enable
+	//INTCONbits.GIE = 1; // global interrupt enable--------> já inicializei esta variavel no init_sys()
 	int heater_flag = 0;
 	
 	char str_aux[STR_MAX] = "\nHello world!\n";
 	uart_writeText(str_aux);
+
+	password();
 	
 	while (1){
 		
@@ -246,7 +244,7 @@ int main(void){
 
 
 
-// void __interrupt() interrupt_service() {
+// void __interrupt() interrupt_service() {  ----------->podemos fazer esta parte na funçao que trata o interrupt externo!!!! lá em cima
 	// if(TMR0IF == 1){
 		// TMR0IF=0;
 		// wind.time_counter++;
