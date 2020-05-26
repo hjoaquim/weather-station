@@ -21,24 +21,15 @@ void timer0_init() {
     PS1=1;
     PS2=1;
 	
-	TMR0IF = 0; 
+	//TMR0IF = 0; 
 	// The flag is set on Overflow
 	// Bit TMR0IF must be cleared in software by the Timer0
 	// module Interrupt Service Routine before re-enabling
 	// this interrupt.
-}
+}  
 
-//counter
-void timer1_init() {
-	
-    TMR1CS = 1;		//bit 1 -> 0 = Internal clock (FOSC/4)
-    
-					//timer1 input clock presclae select bits
-					// 00 -> 1:1 prescale value
-	T1CKPS0 = 0;
-    T1CKPS1 = 0;
-    
-    TMR1 = 0; 		
-    
-    TMR1ON = 1;
-}    
+void init_flags_timer() {
+    INTCONbits.TMR0IE = 1;
+    INTCONbits.TMR0IF = 0;
+    INTCONbits.GIE = 1;
+}
