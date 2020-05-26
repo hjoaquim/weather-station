@@ -28,6 +28,12 @@ void initKeypad() {
 
 }
 
+void delay(int t) {
+	int i = 0;
+	for (i; i < t; i++)
+		;
+}
+
 char keypadScanner() {
 	
 
