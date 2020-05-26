@@ -17,10 +17,10 @@ void initKeypad() {
 	TRISBbits.TRISB1 = 0;
 	TRISBbits.TRISB2 = 0;
 
-	PORTDbits.RD0 = 1;//setting the PORTD bits
-	PORTDbits.RD1 = 1;
-	PORTDbits.RD2 = 1;
-	PORTDbits.RD3 = 1;
+	PORTDbits.RD0 = 0;//setting the PORTD bits
+	PORTDbits.RD1 = 0;
+	PORTDbits.RD2 = 0;
+	PORTDbits.RD3 = 0;
 
 	PORTBbits.RB0 = 0;//settinG the PORTB bits
 	PORTBbits.RB1 = 0;
@@ -35,6 +35,7 @@ void delayin(long int t) {
 }
 
 char keypadScanner() {
+	
 
 	PORTBbits.RB0 = 0;
 	PORTBbits.RB1 = 1;
@@ -42,22 +43,26 @@ char keypadScanner() {
 	if (PORTDbits.RD0 == 0) {
 		delayin(100);
 			while (PORTDbits.RD0 == 0);
-		return '1';
+		return '<';
+
 	}
 	if (PORTDbits.RD1 == 0) {
 		delayin(100);
 			while (PORTDbits.RD1 == 0);
-		return '4';
+		return '7';
+
 	}
 	if (PORTDbits.RD2 == 0) {
 		delayin(100);
 			while (PORTDbits.RD2 == 0);
-		return '7';
+		return '4';
+
 	}
 	if (PORTDbits.RD3 == 0) {
 		delayin(100);
 			while (PORTDbits.RD3 == 0);
-		return '*';
+		return '1';
+
 	}
 
 
@@ -67,22 +72,26 @@ char keypadScanner() {
 	if (PORTDbits.RD0 == 0) {
 		delayin(100);
 			while (PORTDbits.RD0 == 0);
-		return '2';
+		return '0';
+
 	}
 	if (PORTDbits.RD1 == 0) {
 		delayin(100);
 			while (PORTDbits.RD1 == 0);
-		return '5';
+		return '8';
+
 	}
 	if (PORTDbits.RD2 == 0) {
 		delayin(100);
 			while (PORTDbits.RD2 == 0);
-		return '8';
+		return '5';
+
 	}
 	if (PORTDbits.RD3 == 0) {
 		delayin(100);
 			while (PORTDbits.RD3 == 0);
-		return '0';
+		return '2';
+
 	}
 
 	PORTBbits.RB0 = 1;
@@ -91,32 +100,34 @@ char keypadScanner() {
 	if (PORTDbits.RD0 == 0) {
 		delayin(100);
 			while (PORTDbits.RD0 == 0);
-		return '3';
+		return '>';
 	}
 	if (PORTDbits.RD1 == 0) {
 		delayin(100);
 			while (PORTDbits.RD1 == 0);
-		return '6';
+		return '9';
 	}
 	if (PORTDbits.RD2 == 0) {
 		delayin(100);
 			while (PORTDbits.RD2 == 0);
-		return '9';
+		return '6';
 	}
 	if (PORTDbits.RD3 == 0) {
 		delayin(100);
 			while (PORTDbits.RD3 == 0);
-		return '+';
+		return '3';
 	}
-
 
 	return 'n';
 }
 
 char pressedKey() {
 	char key = 'n';
-	while (key == 'n')
+	while (key == 'n') 
 		key = keypadScanner();
+		uart_writeChar(key);
+	
+		
 	return key;
 }
 
@@ -125,9 +136,9 @@ int password() {
 	char user_input[5];
 	int i;
 	char password[5] = "6666";
-	char str_conf[] = "Password correta!!";
-	char str_neg[] = "Password incorreta!!";
-	char init[] = "Introduza Password!!!";
+	char str_conf[] = "\nPassword correta!!\n";
+	char str_neg[] = "\nPassword incorreta!!\n";
+	char init[] = "\nIntroduza Password!\n";
 
 	initKeypad();
 
@@ -135,10 +146,11 @@ int password() {
 	
 	for (i = 0; i < 4; i++) {
 		user_input[i] = pressedKey();
+		//uart_writeChar(user_input[i]);
 	}
 	user_input[4] = '\0';
 
-	if (strcmp(password, user_input)) {
+	if (strcmp(password, user_input)==0) {
 
 		uart_writeText(str_conf);
 		delayin(100);

@@ -66,10 +66,13 @@ void init_sys(void){
 
 
 	TRISBbits.TRISB0 = 1; //setting RB0 as an input
+	OPTION_REG = 0;
 	INTCONbits.INTE = 1; // Enable external interrupts from RB0
 	INTCONbits.PEIE = 1; //enable peripheral inputs
 	INTCONbits.GIE = 1; // Global interrupt enable
-	OPTION_REG = 0b00000000;
+	INTCONbits.INTF = 0;
+	
+	
 
 
 	s.temperature = 0;
@@ -188,19 +191,22 @@ void read_all(void){
 ////****INTERRUPT
 /////*************
 
-void __interrupt() interrupt_service() {
+/*void __interrupt() interrupt_service() {
 	char msg[] = "\nExternal Interrupt Initiated\n";
+
+		//uart_writeText(msg);
+
 
 	if (INTCONbits.INTF == 1) {
 
 		//por o necessario dentro do interrupt
-		uart_writeText(msg);
+		
 
 		INTCONbits.INTF = 0;
 	}
 
 
-}
+}*/
  
 
 
@@ -208,33 +214,35 @@ int main(void){
 
 	init_sys();
 	//INTCONbits.GIE = 1; // global interrupt enable--------> já inicializei esta variavel no init_sys()
+	
 	int heater_flag = 0;
 	
 	char str_aux[STR_MAX] = "\nHello world!\n";
 	uart_writeText(str_aux);
 
-	password();
-	
-	while (1){
-		
-		read_all();
-		isRisk(35,30,430);
-		
-		if (!PORTBbits.RB3){		// RB3 button pressed
-			
-			while (!PORTBbits.RB3){
-				delayin(2000);
+	if (password()) {
+
+		while (1) {
+
+			read_all();
+			isRisk(35, 30, 430);
+
+			if (!PORTBbits.RB3) {		// RB3 button pressed
+
+				while (!PORTBbits.RB3) {
+					delayin(2000);
+				}
+
+				if (heater_flag == 1) {
+					heater_flag = 0;
+					heater(heater_flag);
+				}
+
+				else {
+					heater_flag = 1;
+					heater(heater_flag);
+				}
 			}
-			
-			if(heater_flag==1){
-				heater_flag =0;
-				heater(heater_flag);
-			}
-			
-			else{
-				heater_flag =1;
-				heater(heater_flag);
-			}			
 		}
 	}
 }
