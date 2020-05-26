@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 //Custom .h
 #include "adc.h"
@@ -21,6 +22,13 @@
 
 #define STR_MAX 50
 
+void delayin(long int t) {
+	int i = 0;
+	for (i; i < t; i++)
+		;
+}
+
+
 typedef struct _Data{
 	
 	int temperature;
@@ -39,10 +47,6 @@ typedef struct _Wind{
 
 Wind wind;
 
-
-
-
-
 // ***** GENERAL PURPOSE FUNCTIONS
 ////******************************
 
@@ -53,7 +57,7 @@ void init_sys(void){
 	adcInit();
 	pwm_init();
 	timer0_init();
-	timer1_init();
+	init_flags_timer();
 	
 	TRISBbits.TRISB4 = 1; 			// RB4 button
 	TRISBbits.TRISB3 = 1; 			// RB3 button
@@ -63,17 +67,6 @@ void init_sys(void){
 	TRISCbits.TRISC0 = 1;			// sensor infra-vermelho -> contador de impulsos -> velocidade da ventoinha
 	TRISCbits.TRISC2 = 0;           // ventoinha as output
 	PORTCbits.RC2 = 1;				// ventoinha ON
-
-
-	TRISBbits.TRISB0 = 1; //setting RB0 as an input
-	OPTION_REG = 0;
-	INTCONbits.INTE = 1; // Enable external interrupts from RB0
-	INTCONbits.PEIE = 1; //enable peripheral inputs
-	INTCONbits.GIE = 1; // Global interrupt enable
-	INTCONbits.INTF = 0;
-	
-	
-
 
 	s.temperature = 0;
 	s.wind = 0;
@@ -152,25 +145,7 @@ void temp_read(void){
 }
 
 void wind_read(void){
-	
-	// if(PORTCbits.RC0)
-		// wind.n_pulse++;
-	
-	// while(!T0IF); 						// is true when overflow at 256 --> 15 of these equal to 1 sec
-	// T0IF = 0;
-	// wind.time_counter ++; 
-
-	// if(wind.time_counter == 58*15){		// after 1 minute!
-		
-		// s.wind = wind.n_pulse;
-		// sendMsg1(); 					//send the update each minute				
-
-		// wind.time_counter = 0;
-		// wind.n_pulse =0;
-	// }
-	
-	s.wind = ((TMR1H<<8) + TMR1L);
-	sendMsg1(); 
+	s.wind = wind.n_pulse;
 }
 
 void hum_read(void){
@@ -180,7 +155,7 @@ void hum_read(void){
 void read_all(void){
 	hum_read();
 	temp_read();
-	wind_read();
+	//wind_read();
 	pwm_duty(adc_read(0));
 }
 
@@ -190,79 +165,68 @@ void read_all(void){
 
 ////****INTERRUPT
 /////*************
-
-/*void __interrupt() interrupt_service() {
-	char msg[] = "\nExternal Interrupt Initiated\n";
-
-		//uart_writeText(msg);
-
-
-	if (INTCONbits.INTF == 1) {
-
-		//por o necessario dentro do interrupt
-		
-
-		INTCONbits.INTF = 0;
-	}
-
-
-}*/
  
 
-
+int send_flag = 0;
 int main(void){
 
 	init_sys();
 	//INTCONbits.GIE = 1; // global interrupt enable--------> já inicializei esta variavel no init_sys()
-	
 	int heater_flag = 0;
 	
 	char str_aux[STR_MAX] = "\nHello world!\n";
 	uart_writeText(str_aux);
 
-	if (password()) {
-
-		while (1) {
-
-			read_all();
-			isRisk(35, 30, 430);
-
-			if (!PORTBbits.RB3) {		// RB3 button pressed
-
-				while (!PORTBbits.RB3) {
-					delayin(2000);
-				}
-
-				if (heater_flag == 1) {
-					heater_flag = 0;
-					heater(heater_flag);
-				}
-
-				else {
-					heater_flag = 1;
-					heater(heater_flag);
-				}
+	//password();
+	
+	while (1){
+		
+		read_all();
+		isRisk(35,30,430);
+		
+		if (!PORTBbits.RB3){		// RB3 button pressed --> heater
+			
+			while (!PORTBbits.RB3){
+				delayin(2000);
 			}
+			
+			if(heater_flag==1){
+				heater_flag =0;
+				heater(heater_flag);
+			}
+			
+			else{
+				heater_flag =1;
+				heater(heater_flag);
+			}			
+		}
+		
+		if(send_flag == 1){
+			sendMsg1();
+			send_flag = 0;
 		}
 	}
 }
 
 
 
+void __interrupt() interrupt_service() {
+	
+	if(PORTCbits.RC0)
+		wind.n_pulse++;
+	
+    if(TMR0IF == 1) {
+        TMR0IF = 0;
+        wind.time_counter++;
 
+        if (wind.time_counter == 58*15) {
+            wind_read();
+			send_flag = 1;			
+			wind.time_counter=0;
+			wind.n_pulse=0;
+            TMR1 = 0;
+            TMR0 = 0;
+        }
+    }
+}
 
-
-// void __interrupt() interrupt_service() {  ----------->podemos fazer esta parte na funçao que trata o interrupt externo!!!! lá em cima
-	// if(TMR0IF == 1){
-		// TMR0IF=0;
-		// wind.time_counter++;
-		
-		// if(wind.time_counter == 60*15){
-			// wind.time_counter=0;
-			// wind_read();
-			
-			// TMR1=0;
-			// TMR0=0;
-		// }
-	// }
-// }

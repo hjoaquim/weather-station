@@ -28,12 +28,6 @@ void initKeypad() {
 
 }
 
-void delayin(long int t) {
-	int i = 0;
-	for (i; i < t; i++)
-		;
-}
-
 char keypadScanner() {
 	
 

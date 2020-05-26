@@ -2,6 +2,6 @@
 #define	TIMER0_H
 
 	void timer0_init();
-	void timer1_init();
+	void init_flags_timer();
 
 #endif	/* TIMER0_H */
