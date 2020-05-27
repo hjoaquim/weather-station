@@ -1,30 +1,30 @@
 #include <xc.h>
 #include <stdio.h>         // for sprintf
 #include <string.h>
-
+#include <stdlib.h>
 
 #include "keypad.h"
 #include "uart.h"
 
 void initKeypad() {
 
-	TRISDbits.TRISD0 = 1;//setting the PORTD bits as input
-	TRISDbits.TRISD1 = 1;
-	TRISDbits.TRISD2 = 1;
-	TRISDbits.TRISD3 = 1;
+	TRISDbits.TRISD0 = 0;//setting the PORTD bits as input
+	TRISDbits.TRISD1 = 0;
+	TRISDbits.TRISD2 = 0;
+	TRISDbits.TRISD3 = 0;
 
-	TRISBbits.TRISB0 = 0;//settinh the PORTB bits as output
-	TRISBbits.TRISB1 = 0;
-	TRISBbits.TRISB2 = 0;
+	TRISBbits.TRISB0 = 1;//settinh the PORTB bits as output
+	TRISBbits.TRISB1 = 1;
+	TRISBbits.TRISB2 = 1;
 
-	PORTDbits.RD0 = 0;//setting the PORTD bits
-	PORTDbits.RD1 = 0;
-	PORTDbits.RD2 = 0;
-	PORTDbits.RD3 = 0;
+	PORTDbits.RD0 = 1;//setting the PORTD bits
+	PORTDbits.RD1 = 1;
+	PORTDbits.RD2 = 1;
+	PORTDbits.RD3 = 1;
 
-	PORTBbits.RB0 = 0;//settinG the PORTB bits
-	PORTBbits.RB1 = 0;
-	PORTBbits.RB2 = 0;
+	PORTBbits.RB0 = 1;//settinG the PORTB bits
+	PORTBbits.RB1 = 1;
+	PORTBbits.RB2 = 1;
 
 }
 
@@ -36,86 +36,121 @@ void delay(int t) {
 
 char keypadScanner() {
 	
+	
+	
 
-	PORTBbits.RB0 = 0;
-	PORTBbits.RB1 = 1;
-	PORTBbits.RB2 = 1;
-	if (PORTDbits.RD0 == 0) {
-		delayin(100);
-			while (PORTDbits.RD0 == 0);
-		return '<';
-
-	}
-	if (PORTDbits.RD1 == 0) {
-		delayin(100);
-			while (PORTDbits.RD1 == 0);
-		return '7';
-
-	}
-	if (PORTDbits.RD2 == 0) {
-		delayin(100);
-			while (PORTDbits.RD2 == 0);
-		return '4';
+	PORTDbits.RD0 = 0;
+	PORTDbits.RD1 = 1;
+	PORTDbits.RD2 = 1;
+	PORTDbits.RD3 = 1;
+	delay(20);
+	if (PORTBbits.RB0 == 0) {
+	
+			while (PORTBbits.RB0 == 0);
+			PORTBbits.RB0 == 1;
+			return '<';
 
 	}
-	if (PORTDbits.RD3 == 0) {
-		delayin(100);
-			while (PORTDbits.RD3 == 0);
-		return '1';
-
-	}
-
-
-	PORTBbits.RB0 = 1;
-	PORTBbits.RB1 = 0;
-	PORTBbits.RB2 = 1;
-	if (PORTDbits.RD0 == 0) {
-		delayin(100);
-			while (PORTDbits.RD0 == 0);
+	if (PORTBbits.RB1 == 0) {
+			while (PORTBbits.RB1 == 0);
+			PORTBbits.RB1 == 1;
 		return '0';
 
 	}
-	if (PORTDbits.RD1 == 0) {
-		delayin(100);
-			while (PORTDbits.RD1 == 0);
+	if (PORTBbits.RB2 == 0){
+
+			while (PORTBbits.RB2 == 0);
+			PORTBbits.RB2 == 1;
+		return '>';
+
+	}
+
+	
+
+	PORTDbits.RD0 = 1;
+	PORTDbits.RD1 = 0;
+	PORTDbits.RD2 = 1;
+	PORTDbits.RD3 = 1;
+	delay(20);
+	if (PORTBbits.RB0 == 0) {
+
+		while (PORTBbits.RB0 == 0);
+		PORTBbits.RB0 == 1;
+		return '7';
+
+	}
+	if (PORTBbits.RB1 == 0) {
+
+		while (PORTBbits.RB1 == 0);
+		PORTBbits.RB1 == 1;
 		return '8';
 
 	}
-	if (PORTDbits.RD2 == 0) {
-		delayin(100);
-			while (PORTDbits.RD2 == 0);
+	if (PORTBbits.RB2 == 0) {
+
+		while (PORTBbits.RB2 == 0);
+		PORTBbits.RB2 == 1;
+		return '9';
+
+	}
+
+
+
+	PORTDbits.RD0 = 1;
+	PORTDbits.RD1 = 1;
+	PORTDbits.RD2 = 0;
+	PORTDbits.RD3 = 1;	
+	delay(20);
+	if (PORTBbits.RB0 == 0) {
+
+		while (PORTBbits.RB0 == 0);
+		PORTBbits.RB0 == 1;
+		return '4';
+
+	}
+	if (PORTBbits.RB1 == 0) {
+
+		while (PORTBbits.RB1 == 0);
+		PORTBbits.RB1 == 1;
 		return '5';
 
 	}
-	if (PORTDbits.RD3 == 0) {
-		delayin(100);
-			while (PORTDbits.RD3 == 0);
+	if (PORTBbits.RB2 == 0) {
+
+		while (PORTBbits.RB2 == 0);
+		PORTBbits.RB2 == 1;
+		return '6';
+
+	}
+
+	
+
+	PORTDbits.RD0 = 1;
+	PORTDbits.RD1 = 1;
+	PORTDbits.RD2 = 1;
+	PORTDbits.RD3 = 0;
+	delay(20);
+
+	if (PORTBbits.RB0 == 0) {
+
+		while (PORTBbits.RB0 == 0);
+		PORTBbits.RB0 == 1;
+		return '1';
+
+	}
+	if (PORTBbits.RB1 == 0) {
+
+		while (PORTBbits.RB1 == 0);
+		PORTBbits.RB1 == 1;
 		return '2';
 
 	}
+	if (PORTBbits.RB2 == 0) {
 
-	PORTBbits.RB0 = 1;
-	PORTBbits.RB1 = 1;
-	PORTBbits.RB2 = 0;
-	if (PORTDbits.RD0 == 0) {
-		delayin(100);
-			while (PORTDbits.RD0 == 0);
-		return '>';
-	}
-	if (PORTDbits.RD1 == 0) {
-		delayin(100);
-			while (PORTDbits.RD1 == 0);
-		return '9';
-	}
-	if (PORTDbits.RD2 == 0) {
-		delayin(100);
-			while (PORTDbits.RD2 == 0);
-		return '6';
-	}
-	if (PORTDbits.RD3 == 0) {
-		delayin(100);
-			while (PORTDbits.RD3 == 0);
+		while (PORTBbits.RB2 == 0);
+		PORTBbits.RB2 == 1;
 		return '3';
+
 	}
 
 	return 'n';
@@ -123,11 +158,13 @@ char keypadScanner() {
 
 char pressedKey() {
 	char key = 'n';
-	while (key == 'n') 
+
+	while (key == 'n')
 		key = keypadScanner();
-		uart_writeChar(key);
 	
-		
+		uart_writeChar(key);
+		//uart_writeChar('+');
+		delay(20);
 	return key;
 }
 
@@ -143,22 +180,22 @@ int password() {
 	initKeypad();
 
 	uart_writeText(init);
-	
+
 	for (i = 0; i < 4; i++) {
 		user_input[i] = pressedKey();
 		//uart_writeChar(user_input[i]);
 	}
 	user_input[4] = '\0';
 
-	if (strcmp(password, user_input)==0) {
+	if (strcmp(password, user_input) == 0) {
 
 		uart_writeText(str_conf);
-		delayin(100);
+		delay(100);
 		return 1;
-	}
+	}else {
 
 	uart_writeText(str_neg);
-
+	}
 	return 0;
 
 }
