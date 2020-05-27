@@ -8,12 +8,12 @@
 
 void initKeypad() {
 
-	TRISDbits.TRISD0 = 0;//setting the PORTD bits as input
+	TRISDbits.TRISD0 = 0;//setting the PORTD bits as output
 	TRISDbits.TRISD1 = 0;
 	TRISDbits.TRISD2 = 0;
 	TRISDbits.TRISD3 = 0;
 
-	TRISBbits.TRISB0 = 1;//settinh the PORTB bits as output
+	TRISBbits.TRISB0 = 1;//settinh the PORTB bits as input
 	TRISBbits.TRISB1 = 1;
 	TRISBbits.TRISB2 = 1;
 

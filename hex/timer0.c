@@ -28,8 +28,11 @@ void timer0_init() {
 	// this interrupt.
 }  
 
-void init_flags_timer() {
+void init_flags() {
+	OPTION_REG = 0;
     INTCONbits.TMR0IE = 1;
     INTCONbits.TMR0IF = 0;
+	INTCONbits.INTE = 1;
+	INTCONbits.INTF = 0;
     INTCONbits.GIE = 1;
 }
