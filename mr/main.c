@@ -8,19 +8,19 @@
 #include "iocom.h"
 #include "toxml.h"
 
-// compliation: gcc -o main main.c iocom.c
+// compliation: gcc -o main main.c iocom.c toxml.c
 
-// void isWarning(char * json){
-// }
+void isWarning(int i1,int i2, int i3){
+	
+	print_xml(i1,i2,i3,1);
+	
+}
 
-
-
-
-int main() {
+int main(){
     
 	HANDLE hSerial;
 	hSerial = openCOM("\\\\.\\COM1");
-	int values[];
+	int int_1,int_2,int_3;
 	
 	if(hSerial != NULL){
 
@@ -36,14 +36,25 @@ int main() {
 				
 				if(read_data[3]=='W'){
 					printf("\nwarning Detected\n");
-					//isWarning(read_data);
+					
+					sscanf(read_data, "{ \"Warning\" : 1, \"T\": %d, \"H\": %d, \"W\": %d }", &int_1, &int_2,&int_3);
+					
+					printf("temperatura= %d\n", int_1);
+					printf("humidade= %d\n",int_2);
+					printf("vento= %d\n", int_3);
+					
+					isWarning(int_1,int_2,int_3);
+					continue;
 				}
 				
-				printf("temperatura= %c%c\n", read_data[8],read_data[9]);
-				printf("humidade= %c%c\n", read_data[18],read_data[19]);
-				printf("vento= %c%c%c\n", read_data[27],read_data[28],read_data[29]);
+				sscanf(read_data, "{ \"T\": %d, \"H\": %d, \"W\": %d }", &int_1, &int_2,&int_3);
 				
-				//toXML(read_data);
+				
+				printf("temperatura= %d\n", int_1);
+				printf("humidade= %d\n",int_2);
+				printf("vento= %d\n", int_3);
+				
+				print_xml(int_1,int_2,int_3,0);
 				
 			}
 			
@@ -55,23 +66,3 @@ int main() {
 	}
 	return 0;
 }
-
-
-
-
-
-	// if(hSerial != NULL){
-	
-		// char bytes_to_send[5];
-		// bytes_to_send[0] = 104;
-		// bytes_to_send[1] = 101;
-		// bytes_to_send[2] = 108;
-		// bytes_to_send[3] = 108;
-		// bytes_to_send[4] = 111;
-	 
-		// writeCOM(hSerial, bytes_to_send);
-		
-		// if(closeCOM(hSerial) ==1)
-			// return 0;
-	// }
-	// return 1;

@@ -178,13 +178,19 @@ int main(void){
 	int t1= 35;
 	int h1= 30;
 	int w1= 300;
+	
+	char str[STR_MAX];
 
+	//6666
 	if (password()) {
 
 		
 
 		while (1) {
 
+			uart_readText(str);
+			sscanf(str, "t = %d ; h = %d, w = %d", &t1, &h1,&w1);
+			
 			read_all();
 			isRisk(t1, h1, w1);
 

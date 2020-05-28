@@ -1,18 +1,12 @@
 <Msg1>
-	<datetime>  </datetime>
-	<temperature> </temperature>
-	<humidity> </humidity>
-	<wind> `Ì </wind>
+	<datetime> 29/05/2020 - 00:12 </datetime>
+	<temperature> 33 </temperature>
+	<humidity> 55 </humidity>
+	<wind> 458 </wind>
 </Msg1>
-<Msg1>
-	<datetime>  </datetime>
-	<temperature> </temperature>
-	<humidity> </humidity>
-	<wind> `Ì </wind>
-</Msg1>
-<Msg1>
-	<datetime> 28/05/2020 - 17:41 </datetime>
-	<temperature> </temperature>
-	<humidity> </humidity>
-	<wind> </wind>
-</Msg1>
+<Warning>
+	<datetime> 29/05/2020 - 00:12 </datetime>
+	<temperature> 49 </temperature>
+	<humidity> 17 </humidity>
+	<wind> 397 </wind>
+</Warning>

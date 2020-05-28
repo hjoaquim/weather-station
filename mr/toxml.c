@@ -1,11 +1,14 @@
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <conio.h>
 #include <time.h>
 
 #include "toxml.h"
 
-char* giveDatetime() {
-	
+
+char* giveDatetime(){
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     char* datetime = (char*) malloc(sizeof(char) * 18);
@@ -15,7 +18,8 @@ char* giveDatetime() {
     return datetime;
 }
 
-int toXML(char* jason,int* val){
+
+int print_xml(int i1,int i2, int i3, int isWarning){
 	FILE *fp;
 	
 	fp = fopen("database.xml","ab+");
@@ -25,17 +29,23 @@ int toXML(char* jason,int* val){
 		return 0;             
 	}
 	
-	fprintf(fp, "<Msg1>\n");
+	if(isWarning)
+		fprintf(fp, "<Warning>\n");
+	
+	if(!isWarning)
+		fprintf(fp, "<Msg1>\n");
+	
     fprintf(fp, "\t<datetime> %s </datetime>\n",giveDatetime());
-    fprintf(fp, "\t<temperature> </temperature>\n",val[0]);
-    fprintf(fp, "\t<humidity> </humidity>\n",val[1]);
-    fprintf(fp, "\t<wind> </wind>\n",val[2]);
-    fprintf(fp, "</Msg1>\n");
+    fprintf(fp, "\t<temperature> %d </temperature>\n",i1);
+    fprintf(fp, "\t<humidity> %d </humidity>\n",i2);
+    fprintf(fp, "\t<wind> %d </wind>\n",i3);
+    
+	if(!isWarning)
+		fprintf(fp,"</Msg1>\n");
+	
+	if(isWarning)
+		fprintf(fp, "</Warning>\n");
 	
 	fclose(fp);
 	return 1;
 }
-
-// void Warning_to_XML(char* jason){
-	
-// }

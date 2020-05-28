@@ -1,8 +1,7 @@
 #ifndef TOXML_H
 #define	TOXML_H
 
-	char * give_time();
-	//void Warning_to_XML(char* jason);
-	int toXML(char* jason);
+	char* giveDatetime();
+	int print_xml(int i1,int i2, int i3, int isWarning);
 
 #endif	/* TOXML_H */
