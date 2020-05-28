@@ -3,12 +3,16 @@
 // serial.c / serial.cpp
 // A simple serial port writing example
 // Written by Ted Burke - last updated 13-2-2013
+//
+// compiling: gcc -o io.exe io.c
 
  
 #include <windows.h>
 #include <stdio.h>
 #include <string.h>
+#include <conio.h>
 
+#include "iocom.h"
 
 HANDLE openCOM(char * COM){
 	
@@ -58,7 +62,7 @@ HANDLE openCOM(char * COM){
 	else fprintf(stderr, "OK\n");
  
     // Set COM port timeout settings
-    timeouts.ReadIntervalTimeout = 50;
+    timeouts.ReadIntervalTimeout = 5000;
     timeouts.ReadTotalTimeoutConstant = 50;
     timeouts.ReadTotalTimeoutMultiplier = 10;
     timeouts.WriteTotalTimeoutConstant = 50;
@@ -71,6 +75,7 @@ HANDLE openCOM(char * COM){
         return NULL;
     }
 	
+	fprintf(stderr, "Sucess handling Serial Port\n");
 	return hSerial;
 	
 }
@@ -93,20 +98,24 @@ int writeCOM(HANDLE hSerial, char * bytes){
 }
 
 char* readCOM(HANDLE hSerial){
-	
+
 	DWORD ridden_bytes, total_bytes_ridden = 0;
-	fprintf(stderr, "Reading bytes...");
-	char buffer[50];
+	//fprintf(stderr, "Reading bytes...");
+	char* buffer = (char*) malloc(sizeof(char) * 512);
 	char ch;
 	
-	ch = ReadFile(hSerial, &ch, sizeof(ch), &ridden_bytes, NULL);
+	ReadFile(hSerial, &ch, sizeof(ch), &ridden_bytes, NULL);
+	
+	if(ch != '{')
+		return NULL;
 	
 	for(int i=0; ch!='\n'; i++){
+		
 		if(ridden_bytes==0)
 			break;
 		
 		buffer[i] = ch;
-		ch = ReadFile(hSerial, &ch, sizeof(ch), &ridden_bytes, NULL);
+		ReadFile(hSerial, &ch, sizeof(ch), &ridden_bytes, NULL);
 	}
 	
 	buffer[strlen(buffer)]='\0';
@@ -123,28 +132,5 @@ int closeCOM(HANDLE hSerial){
 	}
 
 	fprintf(stderr, "OK\n");
-	return 1;
-}
- 
-int main() {
-    // Define the five bytes to send ("hello")
-    
-	HANDLE hSerial;
-	hSerial = openCOM("\\\\.\\COM1");
-	
-	if(hSerial != NULL){
-	
-		char bytes_to_send[5];
-		bytes_to_send[0] = 104;
-		bytes_to_send[1] = 101;
-		bytes_to_send[2] = 108;
-		bytes_to_send[3] = 108;
-		bytes_to_send[4] = 111;
-	 
-		writeCOM(hSerial, bytes_to_send);
-		
-		if(closeCOM(hSerial) ==1)
-			return 0;
-	}
 	return 1;
 }
