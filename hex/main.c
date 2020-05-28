@@ -171,7 +171,6 @@ int send_flag = 0;
 int main(void){
 
 	init_sys();
-	//INTCONbits.GIE = 1; // global interrupt enable--------> já inicializei esta variavel no init_sys()
 	int heater_flag = 0;
 	
 	char str_aux[STR_MAX] = "\nHello world!\n";
@@ -206,6 +205,7 @@ int main(void){
 			send_flag = 0;
 		}
 	}
+	return 0;
 }
 
 
