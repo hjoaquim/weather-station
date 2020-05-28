@@ -174,15 +174,17 @@ int main(void){
 	init_sys();
 	int heater_flag = 0;
 	
-	char str_aux[STR_MAX] = "\nHello world!\n";
-	uart_writeText(str_aux);
+	//values for risk situation
+	int t1= 35;
+	int h1= 30;
+	int w1= 300;
 
 	//password();
 
 		while (1) {
 
 			read_all();
-			isRisk(35, 30, 430);
+			isRisk(t1,h1,w1);
 
 			if (!PORTBbits.RB3) {		// RB3 button pressed --> heater
 
