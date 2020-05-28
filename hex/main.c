@@ -50,9 +50,6 @@ Wind wind;
 // ***** GENERAL PURPOSE FUNCTIONS
 ////******************************
 
-
-
-
 void init_sys(void){
 	
 	uart_init();
