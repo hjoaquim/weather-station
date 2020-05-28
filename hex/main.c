@@ -103,7 +103,7 @@ void sendMsg1(void){
 	
 	addNewline();
 	msg[0] = '\0';
-	sprintf(msg,"{ \"T\" : %d, \"H\" : %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
+	sprintf(msg,"{ \"T\": %d, \"H\": %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
 	uart_writeText(msg);
 	delayin(300);
 }
@@ -113,7 +113,7 @@ void sendMsg2(void){
 	
 	addNewline();
 	msg[0] = '\0';
-	sprintf(msg,"{ \"Warning\" : 1, \"T\" : %d, \"H\" : %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
+	sprintf(msg,"{ \"Warning\" : 1, \"T\": %d, \"H\": %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
 	uart_writeText(msg);
 	delayin(300);
 }
