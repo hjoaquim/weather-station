@@ -32,7 +32,7 @@ void pwm_duty(int duty){
    
    if(duty<1023){
 	//PWM Duty Cycle =(CCPR1L:CCP1CON<5:4>) * TOSC * (TMR2 Prescale Value)
-    duty = ((float)duty/1023)*(_XTAL_FREQ/(PWM_FREQ*TMR2PRESCALE)); 
+    duty = (int)((float)duty/1023)*(_XTAL_FREQ/(PWM_FREQ*TMR2PRESCALE)); 
     CCP1X = duty & 1; //Store the 1st bit
     CCP1Y = duty & 2; //Store the 0th bit
     CCPR1L = duty>>2;// Store the remining 8 bit
