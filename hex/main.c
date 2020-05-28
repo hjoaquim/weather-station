@@ -51,13 +51,16 @@ Wind wind;
 ////******************************
 
 
+
+
 void init_sys(void){
 	
 	uart_init();
 	adcInit();
 	pwm_init();
 	timer0_init();
-	init_flags_timer();
+	init_flags();
+	
 	
 	TRISBbits.TRISB4 = 1; 			// RB4 button
 	TRISBbits.TRISB3 = 1; 			// RB3 button
@@ -78,8 +81,12 @@ void init_sys(void){
 	last_risk.temperature = 0;
 	last_risk.wind = 0;
 	last_risk.humidity =0;
+
+	
 	
 }
+
+
 
 void heater(int flag){
 	if (flag == 0){
@@ -168,44 +175,45 @@ void read_all(void){
  
 
 int send_flag = 0;
-int main(void){
 
+int main(void){
+	
 	init_sys();
-	//INTCONbits.GIE = 1; // global interrupt enable--------> já inicializei esta variavel no init_sys()
 	int heater_flag = 0;
 	
 	char str_aux[STR_MAX] = "\nHello world!\n";
 	uart_writeText(str_aux);
 
 	//password();
+
+		while (1) {
+
+			read_all();
+			isRisk(35, 30, 430);
+
+			if (!PORTBbits.RB3) {		// RB3 button pressed --> heater
+
+				while (!PORTBbits.RB3) {
+					delayin(2000);
+				}
+
+				if (heater_flag == 1) {
+					heater_flag = 0;
+					heater(heater_flag);
+				}
+
+				else {
+					heater_flag = 1;
+					heater(heater_flag);
+				}
+			}
+
+			if (send_flag == 1) {
+				sendMsg1();
+				send_flag = 0;
+			}
+		}
 	
-	while (1){
-		
-		read_all();
-		isRisk(35,30,430);
-		
-		if (!PORTBbits.RB3){		// RB3 button pressed --> heater
-			
-			while (!PORTBbits.RB3){
-				delayin(2000);
-			}
-			
-			if(heater_flag==1){
-				heater_flag =0;
-				heater(heater_flag);
-			}
-			
-			else{
-				heater_flag =1;
-				heater(heater_flag);
-			}			
-		}
-		
-		if(send_flag == 1){
-			sendMsg1();
-			send_flag = 0;
-		}
-	}
 }
 
 
