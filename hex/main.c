@@ -179,41 +179,57 @@ int main(void){
 	int h1= 30;
 	int w1= 300;
 
-	//password();
+	if (password()) {
+
+		
 
 		while (1) {
 
 			read_all();
-			isRisk(t1,h1,w1);
+			isRisk(t1, h1, w1);
+
 
 			if (!PORTBbits.RB3) {		// RB3 button pressed --> heater
 
 				while (!PORTBbits.RB3) {
 					delayin(2000);
+
+
 				}
 
 				if (heater_flag == 1) {
 					heater_flag = 0;
 					heater(heater_flag);
+
+
 				}
 
 				else {
 					heater_flag = 1;
 					heater(heater_flag);
+
+
 				}
 			}
 
 			if (send_flag == 1) {
 				sendMsg1();
 				send_flag = 0;
+
+
 			}
 		}
+	}
 	
 }
 
 
 int last_val = 0;
 void __interrupt() interrupt_service() {
+
+	if (INTF == 1) {
+		//inerrupt externo
+	}
 	
 	if(PORTCbits.RC0 && last_val==0)
 		wind.n_pulse++;
