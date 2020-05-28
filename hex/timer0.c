@@ -29,10 +29,11 @@ void timer0_init() {
 }  
 
 void init_flags() {
-	OPTION_REG = 0;
+	//OPTION_REG = 0; 		// OPTION_REG Register is a readable and writable register, which contains various control bits to configure the TMR0
+	// INTCONbits.INTE = 1; //INTE: RB0/INT External Interrupt Enable bit
+	// INTCONbits.INTF = 0; //INTF: RB0/INT External Interrupt Flag bit
+	
     INTCONbits.TMR0IE = 1;
     INTCONbits.TMR0IF = 0;
-	INTCONbits.INTE = 1;
-	INTCONbits.INTF = 0;
     INTCONbits.GIE = 1;
 }

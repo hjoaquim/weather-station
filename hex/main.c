@@ -210,11 +210,13 @@ int main(void){
 }
 
 
-
+int last_val = 0;
 void __interrupt() interrupt_service() {
 	
-	if(PORTCbits.RC0)
+	if(PORTCbits.RC0 && last_val==0)
 		wind.n_pulse++;
+	
+	last_val = PORTCbits.RC0;
 	
     if(TMR0IF == 1) {
         TMR0IF = 0;
