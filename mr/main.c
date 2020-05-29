@@ -16,6 +16,13 @@ void isWarning(int i1,int i2, int i3){
 	
 }
 
+void menu() {
+    printf("\n\nMR Application:\n");
+    printf("1 - Request current measurements\n");
+    printf("2 - Change alert values\n");
+    printf("3 - Show menu\n\n");
+}
+
 int main(){
     
 	HANDLE hSerial;
@@ -23,6 +30,8 @@ int main(){
 	int int_1,int_2,int_3;
 	
 	if(hSerial != NULL){
+	
+	menu();
 
 		while(1){
 			while(!kbhit()){
@@ -59,8 +68,16 @@ int main(){
 			}
 			
 			
-			// char input = getch();
-			// printf("%c\n\n", input);
+			char user_input = getch();
+			switch(user_input){
+				
+				case '1': printf("\noption 1\n");break;
+				case '2': printf("\noption 2\n");break;
+				case '3': printf("\noption 3\n");break;
+				default: printf("\nInvalid option\n");
+				
+			}
+			
 		}
 
 	}

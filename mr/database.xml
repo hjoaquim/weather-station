@@ -10,3 +10,15 @@
 	<humidity> 17 </humidity>
 	<wind> 397 </wind>
 </Warning>
+<Warning>
+	<datetime> 29/05/2020 - 01:06 </datetime>
+	<temperature> 49 </temperature>
+	<humidity> 17 </humidity>
+	<wind> 397 </wind>
+</Warning>
+<Msg1>
+	<datetime> 29/05/2020 - 01:06 </datetime>
+	<temperature> 33 </temperature>
+	<humidity> 55 </humidity>
+	<wind> 458 </wind>
+</Msg1>

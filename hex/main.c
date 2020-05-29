@@ -173,6 +173,7 @@ int main(void){
 	
 	init_sys();
 	int heater_flag = 0;
+	char user_input;
 	
 	//values for risk situation
 	int t1= 35;
@@ -188,8 +189,7 @@ int main(void){
 
 		while (1) {
 
-			uart_readText(str);
-			sscanf(str, "t = %d ; h = %d, w = %d", &t1, &h1,&w1);
+			
 			
 			read_all();
 			isRisk(t1, h1, w1);
@@ -223,6 +223,20 @@ int main(void){
 				send_flag = 0;
 
 
+			}
+			else{
+				
+				
+				user_input = uart_read();
+				switch(user_input){
+					case 'L': t1 = 25; h1= 40; w1=50;break;
+					case 'M': t1 = 30; h1= 30; w1=150;break;
+					case 'H': t1 = 35; h1= 20; w1=300;break;
+				}
+				
+				sprintf(str,"\nnew values\n t= %d ; h= %d, w=%d\n", h1, t1, w1);
+				uart_writeText(str);
+				
 			}
 		}
 	}
