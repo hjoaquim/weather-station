@@ -22,3 +22,69 @@
 	<humidity> 55 </humidity>
 	<wind> 458 </wind>
 </Msg1>
+<Msg1>
+	<datetime> 29/05/2020 - 21:55 </datetime>
+	<temperature> 33 </temperature>
+	<humidity> 55 </humidity>
+	<wind> 458 </wind>
+</Msg1>
+<Warning>
+	<datetime> 29/05/2020 - 21:55 </datetime>
+	<temperature> 49 </temperature>
+	<humidity> 17 </humidity>
+	<wind> 397 </wind>
+</Warning>
+<Warning>
+	<datetime> 29/05/2020 - 22:47 </datetime>
+	<temperature> 49 </temperature>
+	<humidity> 17 </humidity>
+	<wind> 397 </wind>
+</Warning>
+<Msg1>
+	<datetime> 29/05/2020 - 23:13 </datetime>
+	<temperature> 33 </temperature>
+	<humidity> 55 </humidity>
+	<wind> 458 </wind>
+</Msg1>
+<Warning>
+	<datetime> 29/05/2020 - 23:13 </datetime>
+	<temperature> 49 </temperature>
+	<humidity> 17 </humidity>
+	<wind> 397 </wind>
+</Warning>
+<Warning>
+	<datetime> 29/05/2020 - 23:22 </datetime>
+	<temperature> 49 </temperature>
+	<humidity> 17 </humidity>
+	<wind> 397 </wind>
+</Warning>
+<Msg1>
+	<datetime> 29/05/2020 - 23:22 </datetime>
+	<temperature> 33 </temperature>
+	<humidity> 55 </humidity>
+	<wind> 458 </wind>
+</Msg1>
+<Msg1>
+	<datetime> 29/05/2020 - 23:50 </datetime>
+	<temperature> 27 </temperature>
+	<humidity> 50 </humidity>
+	<wind> 369 </wind>
+</Msg1>
+<Msg1>
+	<datetime> 29/05/2020 - 23:50 </datetime>
+	<temperature> 27 </temperature>
+	<humidity> 50 </humidity>
+	<wind> 369 </wind>
+</Msg1>
+<Msg1>
+	<datetime> 29/05/2020 - 23:50 </datetime>
+	<temperature> 27 </temperature>
+	<humidity> 50 </humidity>
+	<wind> 361 </wind>
+</Msg1>
+<Msg1>
+	<datetime> 29/05/2020 - 23:50 </datetime>
+	<temperature> 27 </temperature>
+	<humidity> 50 </humidity>
+	<wind> 361 </wind>
+</Msg1>

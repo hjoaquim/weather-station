@@ -86,7 +86,7 @@ int writeCOM(HANDLE hSerial, char * bytes){
 	DWORD bytes_written, total_bytes_written = 0;
 	fprintf(stderr, "Sending bytes...");
 	
-	if(!WriteFile(hSerial, bytes, strlen(bytes)-1 , &bytes_written, NULL)){
+	if(!WriteFile(hSerial, bytes, strlen(bytes) , &bytes_written, NULL)){
 		
 		fprintf(stderr, "Error\n");
 		CloseHandle(hSerial);
