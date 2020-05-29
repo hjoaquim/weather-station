@@ -187,12 +187,8 @@ int main(void){
 	//6666
 	if (password()) {
 
-		
-
 		while (1) {
 
-			
-			
 			read_all();
 			isRisk(t1, h1, w1);
 
@@ -201,21 +197,17 @@ int main(void){
 
 				while (!PORTBbits.RB3) {
 					delayin(2000);
-
-
 				}
 
 				if (heater_flag == 1) {
 					heater_flag = 0;
 					heater(heater_flag);
 
-
 				}
 
 				else {
 					heater_flag = 1;
 					heater(heater_flag);
-
 
 				}
 			}
@@ -224,25 +216,28 @@ int main(void){
 				sendMsg1();
 				send_flag = 0;
 
-
-			}
-			else{
-				
+			}else{
 				
 				user_input = uart_read();
+				
 				switch(user_input){
+				// printf("1 - Request current measurements\n");
+				// printf("2 - Change alert values\n");
+				
+					case '1': sendMsg1();break;
 					case 'L': t1 = 25; h1= 40; w1=50;break;
 					case 'M': t1 = 30; h1= 30; w1=150;break;
 					case 'H': t1 = 35; h1= 20; w1=300;break;
+					
 				}
 				
-				sprintf(str,"\nnew values\n t= %d ; h= %d, w=%d\n", h1, t1, w1);
-				uart_writeText(str);
-				
+				if(user_input == 'L' || user_input == 'M'|| user_input == 'H'){
+					sprintf(str,"\nnew values\n t= %d ; h= %d, w=%d\n", t1, h1, w1);
+					uart_writeText(str);
+				}
 			}
 		}
 	}
-	
 }
 
 
@@ -250,7 +245,12 @@ int last_val = 0;
 void __interrupt() interrupt_service() {
 
 	if (INTF == 1) {
-		//inerrupt externo
+		if (!PORTBbits.RB0){
+			while (!PORTBbits.RB3) {
+				delayin(2000);
+			}
+			INTF=0;
+		}	
 	}
 	
 	if(PORTCbits.RC0 && last_val==0)

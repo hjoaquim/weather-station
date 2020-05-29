@@ -179,7 +179,7 @@ int password() {
 
 	initKeypad();
 
-	///uart_writeText(init);
+	uart_writeText(init);
 
 	for (i = 0; i < 4; i++) {
 		user_input[i] = pressedKey();
@@ -189,12 +189,12 @@ int password() {
 
 	if (strcmp(password, user_input) == 0) {
 
-		///uart_writeText(str_conf);
+		uart_writeText(str_conf);
 		delay(100);
 		return 1;
 	}else {
 
-	///uart_writeText(str_neg);
+	uart_writeText(str_neg);
 	}
 	return 0;
 
