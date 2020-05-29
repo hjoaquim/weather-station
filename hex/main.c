@@ -10,6 +10,8 @@
 #include "pwm.h"
 #include "timer0.h"
 #include "keypad.h"
+#include "i2c.h"
+#include "eeprom.h"
 
 #pragma config FOSC = HS // Oscillator Selection bits (HS oscillator)
 #pragma config WDTE = OFF // Watchdog Timer Enable bit
