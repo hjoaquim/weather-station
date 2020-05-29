@@ -8,6 +8,7 @@
 
 #include "iocom.h"
 #include "toxml.h"
+#include "http_req.h"
 
 // compliation: gcc -o main main.c iocom.c toxml.c
 
