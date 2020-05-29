@@ -4,16 +4,19 @@
 #include <string.h>
 #include <conio.h>
 #include <time.h>
+#include<Windows.h>
 
 #include "iocom.h"
 #include "toxml.h"
 #include "http_req.h"
 
-// compliation: gcc -o main main.c iocom.c toxml.c
+// compliation: gcc -o main main.c iocom.c toxml.c http_req.c -lws2_32
 
-void isWarning(int i1,int i2, int i3){
+void isWarning(int i1,int i2, int i3, char* data){
 	
 	print_xml(i1,i2,i3,1);
+	to_server(data);
+
 	
 }
 
@@ -53,7 +56,7 @@ int main(){
 					printf("humidade= %d\n",int_2);
 					printf("vento= %d\n", int_3);
 					
-					isWarning(int_1,int_2,int_3);
+					isWarning(int_1,int_2,int_3, read_data);
 					continue;
 				}
 				

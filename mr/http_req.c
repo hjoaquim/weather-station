@@ -1,12 +1,15 @@
+
+
+#pragma comment(lib,"ws2_32.lib") //Winsock Library
 #include<stdio.h>
 #include<winsock2.h>
 #include <string.h>
 #include "http_req.h"
 
-#pragma comment(lib,"ws2_32.lib") //Winsock Library
 
 
-SOCKET initalize() {
+
+SOCKET initialize() {
 	WSADATA wsa;
 	SOCKET s;
 	struct sockaddr_in server;
@@ -47,7 +50,7 @@ SOCKET initalize() {
 int send_message(SOCKET s, char* msg) {
 
 	char* message;
-	char contentLen[];
+	char contentLen[32];
 
 	// Work well with Get Method
 	strcat(message, "POST / ~sad / HTTP / 1.1\n");
@@ -72,7 +75,7 @@ int send_message(SOCKET s, char* msg) {
 	return 1;
 }
 
-int recieve_reply(SOCKET s) {
+/*int recieve_reply(SOCKET s) {
 	int recv_size;
 	char* server_reply[2000];
 
@@ -89,7 +92,7 @@ int recieve_reply(SOCKET s) {
 
 	return 1;
 
-}
+}*/
 
 void closeSocket(SOCKET socket) {
 	printf("\nClosing\n");
@@ -107,6 +110,6 @@ void to_server(char* msg) {
 
 	socket = initialize();
 	send_message(socket, msg);
-	close_socket(socket);
+	closeSocket(socket);
 
 }
