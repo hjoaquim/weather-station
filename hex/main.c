@@ -25,7 +25,7 @@
 
 // How to run a MPLAB XC8 Compiler in the windows comand line:
 
-// xc8 --chip=16f877a main.c adc.c uart.c pwm.c timer0.c keypad.c i2c.c eeprom.c
+// xc8 --chip=16f877a main.c adc.c uart.c pwm.c timer0.c keypad.c eeprom.c
 
 
 
@@ -123,6 +123,9 @@ void sendMsg2(void){
 	msg[0] = '\0';
 	sprintf(msg,"{ \"Warning\" : 1, \"T\": %d, \"H\": %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
 	uart_writeText(msg);
+	
+	msg[0] = '\0';
+	sprintf(msg,"{ \"EPPROM Warning\" : 1, \"T\": %d, \"H\": %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
 	writeToEEPROM(msg);
 	
 	delayin(300);

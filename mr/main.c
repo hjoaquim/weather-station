@@ -26,7 +26,8 @@ void menu() {
     printf("\n\nMR Application:\n");
     printf("1 - Request current measurements\n");
     printf("2 - Change alert values\n");
-    printf("3 - Show menu\n\n");
+	printf("3 - Request last warning from EEPROM.\n"); 
+    printf("4 - Show menu\n\n");
 }
 
 void change_values(HANDLE hSerial){
@@ -121,7 +122,7 @@ int main(){
 				
 				case '1': printf("\nRequesting current values...\n"); writeCOM(hSerial,to_send1); break;
 				case '2': change_values(hSerial); break;
-				case '3': printf("\nRequest last warning from EEPROM.\n"); writeCOM(hSerial,to_send2); break;
+				case '3': writeCOM(hSerial,to_send2); break;
 				case '4': menu();break;
 				default: printf("\nInvalid option\n");
 				
