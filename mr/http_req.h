@@ -1,6 +1,6 @@
 #pragma once
 
-#include<WinSock2.h>
+#include<winsock2.h>
 
 #ifndef HTTP_REQ_H
 #define HTTP_REQ_H

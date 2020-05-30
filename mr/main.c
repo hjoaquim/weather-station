@@ -4,19 +4,19 @@
 #include <string.h>
 #include <conio.h>
 #include <time.h>
-#include <ctype.h> 
+
 
 #include "iocom.h"
 #include "toxml.h"
 #include "http_req.h"
 
-// compliation: gcc -o main main.c iocom.c toxml.c
+// compliation: gcc -o main main.c iocom.c toxml.c http_req.c -lws2_32
 
 void isWarning(int i1,int i2, int i3, char* data){
 	
-	if(print_xml(i1,i2,i3,1))
-		printf("Added to DB\n");
-	//enviar para o servidor
+	print_xml(i1,i2,i3,1);
+	to_server(data);
+
 	
 }
 
@@ -27,41 +27,11 @@ void menu() {
     printf("3 - Show menu\n\n");
 }
 
-void change_values(HANDLE hSerial){
-	
-	char ch;
-	char to_send[]="L";
-	int flag =1;
-	
-	printf("\nWich precision?:\n");
-    printf("L - low\n");
-    printf("M - medium\n");
-    printf("H - high\n");
-	
-	while (flag){
-		ch = getch();
-		ch = toupper(ch);
-		
-		if(ch != 'L' && ch != 'M' && ch != 'H'){
-			printf("Invalid option. Try again\n");
-		}
-		else
-			flag =0;
-	}
-	
-	printf("char read: %c\n",ch);
-	to_send[0] = ch;
-	
-	writeCOM(hSerial,to_send);
-}
-
-
 int main(){
     
 	HANDLE hSerial;
-	hSerial = openCOM("\\\\.\\COM2");
+	hSerial = openCOM("\\\\.\\COM1");
 	int int_1,int_2,int_3;
-	char to_send[] = "1";
 	
 	if(hSerial != NULL){
 	
@@ -93,66 +63,27 @@ int main(){
 				sscanf(read_data, "{ \"T\": %d, \"H\": %d, \"W\": %d }", &int_1, &int_2,&int_3);
 				
 				
-				printf("temperature= %d\n", int_1);
-				printf("humidity= %d\n",int_2);
-				printf("wind= %d\n", int_3);
+				printf("temperatura= %d\n", int_1);
+				printf("humidade= %d\n",int_2);
+				printf("vento= %d\n", int_3);
 				
-				if(print_xml(i1,i2,i3,0))
-					printf("Added to DB\n");
+				print_xml(int_1,int_2,int_3,0);
 				
 			}
 			
 			
 			char user_input = getch();
 			switch(user_input){
-				// printf("1 - Request current measurements\n");
-				// printf("2 - Change alert values\n");
-				// printf("3 - Show menu\n\n");
 				
-				
-				case '1': printf("\nRequesting current values...\n"); writeCOM(hSerial,to_send); break;
-				case '2': change_values(hSerial); break;
-				case '3': menu();break;
+				case '1': printf("\noption 1\n");break;
+				case '2': printf("\noption 2\n");break;
+				case '3': printf("\noption 3\n");break;
 				default: printf("\nInvalid option\n");
 				
-			}	
+			}
+			
 		}
+
 	}
 	return 0;
 }
-
-
-
-	// if(hSerial != NULL){
-	
-		// char bytes_to_send[5];
-		// bytes_to_send[0] = 104;
-		// bytes_to_send[1] = 101;
-		// bytes_to_send[2] = 108;
-		// bytes_to_send[3] = 108;
-		// bytes_to_send[4] = 111;
-	 
-		// writeCOM(hSerial, bytes_to_send);
-		
-		// if(closeCOM(hSerial) ==1)
-			// return 0;
-	// }
-	// return 1;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
