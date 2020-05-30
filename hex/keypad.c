@@ -173,9 +173,9 @@ int password() {
 	char user_input[5];
 	int i;
 	char password[5] = "6666";
-	char str_conf[] = "\nPassword correta!!\n";
-	char str_neg[] = "\nPassword incorreta!!\n";
-	char init[] = "\nIntroduza Password!\n";
+	char str_conf[] = "\nPassword OK!\n";
+	char str_neg[] = "\nWrong password.\n";
+	char init[] = "\nInsert password:\n";
 
 	initKeypad();
 

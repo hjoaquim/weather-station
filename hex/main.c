@@ -10,8 +10,8 @@
 #include "pwm.h"
 #include "timer0.h"
 #include "keypad.h"
-#include "i2c.h"
-#include "eeprom.h"
+// #include "i2c.h"
+// #include "eeprom.h"
 
 #pragma config FOSC = HS // Oscillator Selection bits (HS oscillator)
 #pragma config WDTE = OFF // Watchdog Timer Enable bit
@@ -216,26 +216,28 @@ int main(void){
 				sendMsg1();
 				send_flag = 0;
 
-			}else{
-				
-				user_input = uart_read();
-				
-				switch(user_input){
-				// printf("1 - Request current measurements\n");
-				// printf("2 - Change alert values\n");
-				
-					case '1': sendMsg1();break;
-					case 'L': t1 = 25; h1= 40; w1=50;break;
-					case 'M': t1 = 30; h1= 30; w1=150;break;
-					case 'H': t1 = 35; h1= 20; w1=300;break;
-					
-				}
-				
-				if(user_input == 'L' || user_input == 'M'|| user_input == 'H'){
-					sprintf(str,"\nnew values\n t= %d ; h= %d, w=%d\n", t1, h1, w1);
-					uart_writeText(str);
-				}
 			}
+			
+			// else {
+				
+				// user_input = uart_read();
+				
+				// switch(user_input){
+				// // printf("1 - Request current measurements\n");
+				// // printf("2 - Change alert values\n");
+				
+					// case '1': sendMsg1();break;
+					// case 'L': t1 = 25; h1= 40; w1=50;break;
+					// case 'M': t1 = 30; h1= 30; w1=150;break;
+					// case 'H': t1 = 35; h1= 20; w1=300;break;
+					
+				// }
+				
+				// if(user_input == 'L' || user_input == 'M'|| user_input == 'H'){
+					// sprintf(str,"\nnew values\n t= %d ; h= %d, w=%d\n", t1, h1, w1);
+					// uart_writeText(str);
+				// }
+			//}
 		}
 	}
 }
@@ -261,7 +263,7 @@ void __interrupt() interrupt_service() {
     if(TMR0IF == 1) {
         TMR0IF = 0;
         wind.time_counter++;
-
+	
         if (wind.time_counter == 58*15) {
             wind_read();
 			send_flag = 1;			
