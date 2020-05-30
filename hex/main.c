@@ -25,7 +25,7 @@
 
 // How to run a MPLAB XC8 Compiler in the windows comand line:
 
-// xc8 --chip=16f877a main.c adc.c uart.c pwm.c timer0.c keypad.c i2c.c eeprom.c
+// xc8 --chip=16f877a main.c adc.c uart.c pwm.c timer0.c keypad.c eeprom.c
 
 
 
@@ -259,15 +259,11 @@ int main(void){
 
 
 int last_val = 0;
+
 void __interrupt() interrupt_service() {
 
 	if (INTF == 1) {
-		if (!PORTBbits.RB0){
-			while (!PORTBbits.RB3) {
-				for(int i=0; i<2000; i++);
-			}
-			INTF=0;
-		}	
+		INTF = 0;
 	}
 	
 	if(PORTCbits.RC0 && last_val==0)
