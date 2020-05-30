@@ -4,7 +4,7 @@
 #include <string.h>
 #include <conio.h>
 #include <time.h>
-#include<Windows.h>
+
 
 #include "iocom.h"
 #include "toxml.h"
