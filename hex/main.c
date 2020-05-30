@@ -218,26 +218,29 @@ int main(void){
 
 			}
 			
-			// else {
+
 				
-				// user_input = uart_read();
+			user_input = uart_read();
+			
+			
+			switch(user_input){
+			// printf("1 - Request current measurements\n");
+			// printf("2 - Change alert values\n");
+			
+				case '1': sendMsg1();break;
+				case 'L': t1 = 25; h1= 40; w1=50;break;
+				case 'M': t1 = 30; h1= 30; w1=150;break;
+				case 'H': t1 = 35; h1= 20; w1=300;break;
 				
-				// switch(user_input){
-				// // printf("1 - Request current measurements\n");
-				// // printf("2 - Change alert values\n");
-				
-					// case '1': sendMsg1();break;
-					// case 'L': t1 = 25; h1= 40; w1=50;break;
-					// case 'M': t1 = 30; h1= 30; w1=150;break;
-					// case 'H': t1 = 35; h1= 20; w1=300;break;
-					
-				// }
-				
-				// if(user_input == 'L' || user_input == 'M'|| user_input == 'H'){
-					// sprintf(str,"\nnew values\n t= %d ; h= %d, w=%d\n", t1, h1, w1);
-					// uart_writeText(str);
-				// }
-			//}
+			}
+			
+			
+			if (user_input == 'L' || user_input == 'M'|| user_input == 'H'){
+				sprintf(str,"\nnew values\n t= %d ; h= %d, w=%d\n", t1, h1, w1);
+				uart_writeText(str);
+			}
+			
+			
 		}
 	}
 }
@@ -249,7 +252,7 @@ void __interrupt() interrupt_service() {
 	if (INTF == 1) {
 		if (!PORTBbits.RB0){
 			while (!PORTBbits.RB3) {
-				delayin(2000);
+				for(int i=0; i<2000; i++);
 			}
 			INTF=0;
 		}	

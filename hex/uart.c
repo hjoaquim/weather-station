@@ -60,8 +60,12 @@ char uart_read(void){
 	0 = The USART receive buffer is empty
 	*/
 	
-	while(!RCIF);
-	return RCREG;
+	// while(!RCIF);
+	// return RCREG;
+    if(RCIF) {
+        while(!RCIF);
+        return RCREG;
+    } else return 0;
 	
 }
 
