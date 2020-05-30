@@ -10,8 +10,7 @@
 #include "pwm.h"
 #include "timer0.h"
 #include "keypad.h"
-// #include "i2c.h"
-// #include "eeprom.h"
+#include"eeprom.h"
 
 #pragma config FOSC = HS // Oscillator Selection bits (HS oscillator)
 #pragma config WDTE = OFF // Watchdog Timer Enable bit
@@ -59,6 +58,7 @@ void init_sys(void){
 	pwm_init();
 	timer0_init();
 	init_flags();
+	writeToEEPROM("{No warnings yet}");
 	
 	
 	TRISBbits.TRISB4 = 1; 			// RB4 button
@@ -117,6 +117,8 @@ void sendMsg2(void){
 	msg[0] = '\0';
 	sprintf(msg,"{ \"Warning\" : 1, \"T\": %d, \"H\": %d, \"W\": %d }", s.temperature, s.humidity, s.wind);
 	uart_writeText(msg);
+	writeToEEPROM(msg);
+	
 	delayin(300);
 }
 
@@ -189,6 +191,8 @@ int main(void){
 
 		while (1) {
 
+			
+			
 			read_all();
 			isRisk(t1, h1, w1);
 
@@ -231,6 +235,7 @@ int main(void){
 				case 'L': t1 = 25; h1= 40; w1=50;break;
 				case 'M': t1 = 30; h1= 30; w1=150;break;
 				case 'H': t1 = 35; h1= 20; w1=300;break;
+				case '3': addNewline();readFromEEPROM(); break;
 				
 			}
 			

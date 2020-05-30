@@ -1,9 +1,7 @@
 #ifndef EEPROM_H
 #define	EEPROM_H
 
-void eeprom_writeByte(unsigned int addr, unsigned char byte);
+void writeToEEPROM(char *str);
 
-
-unsigned char eeprom_readByte(unsigned int addr);
-
+void readFromEEPROM(void);
 #endif	/* EEPROM_H */
