@@ -8,14 +8,15 @@
 
 #include "iocom.h"
 #include "toxml.h"
+#include "http_req.h"
 
-// compliation: gcc -o main main.c iocom.c toxml.c
+// compliation: gcc -o main main.c iocom.c toxml.c http_req.c -lws2_32
 
 void isWarning(int i1,int i2, int i3, char* data){
 	
 	if(print_xml(i1,i2,i3,1))
 		printf("Added to DB\n");
-	//enviar para o servidor
+	to_server(data);
 	
 }
 

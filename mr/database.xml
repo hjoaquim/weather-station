@@ -346,3 +346,39 @@
 	<humidity> 86 </humidity>
 	<wind> 396 </wind>
 </Msg1>
+<Msg1>
+	<datetime> 30/05/2020 - 13:35 </datetime>
+	<temperature> 27 </temperature>
+	<humidity> 50 </humidity>
+	<wind> 358 </wind>
+</Msg1>
+<Warning>
+	<datetime> 30/05/2020 - 13:35 </datetime>
+	<temperature> 35 </temperature>
+	<humidity> 30 </humidity>
+	<wind> 400 </wind>
+</Warning>
+<Warning>
+	<datetime> 30/05/2020 - 13:41 </datetime>
+	<temperature> 35 </temperature>
+	<humidity> 30 </humidity>
+	<wind> 400 </wind>
+</Warning>
+<Warning>
+	<datetime> 30/05/2020 - 13:49 </datetime>
+	<temperature> 35 </temperature>
+	<humidity> 30 </humidity>
+	<wind> 400 </wind>
+</Warning>
+<Msg1>
+	<datetime> 30/05/2020 - 13:50 </datetime>
+	<temperature> 27 </temperature>
+	<humidity> 50 </humidity>
+	<wind> 358 </wind>
+</Msg1>
+<Warning>
+	<datetime> 30/05/2020 - 13:50 </datetime>
+	<temperature> 35 </temperature>
+	<humidity> 30 </humidity>
+	<wind> 400000000 </wind>
+</Warning>

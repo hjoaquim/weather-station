@@ -37,7 +37,7 @@ SOCKET initialize() {
 	server.sin_port = htons(80);
 
 	//Connect to remote server
-	if (connect(s, (struct sockaddr*) & server, sizeof(server)) < 0)
+	if (connect(s, (struct sockaddr*) &server, sizeof(server)) < 0)
 	{
 		printf("connect error.\n");
 		return NULL;
@@ -59,14 +59,14 @@ int send_message(SOCKET s, char* msg) {
 	
 
 	// Work well with Get Method
-	strcat(message, "POST / ~sad / HTTP / 1.1\n");
+	strcat(message, "POST /~sad/ HTTP/1.1\n");
 	strcat(message, "Host: 193.136.120.133\n");
 	//strcat(message, "Connection: close\n");
 	strcat(message, "Content-Type: application/json\n");
 	//strcat(message, "Content-Encoding: binary\n");
 
 
-	sprintf(contentLen, "Content-Length: %d\n", strlen(msg));
+	sprintf(contentLen, "Content-Length: %d\n\n", strlen(msg));
 	strcat(message, contentLen);
 	
 	//strcat(message, "Accept-Charset: utf-8\n\n");
@@ -83,7 +83,7 @@ int send_message(SOCKET s, char* msg) {
 
 	printf("Message sent.\n");
 	puts(message);
-	puts(msg);
+	//puts(msg);
 
 	return 1;
 }
