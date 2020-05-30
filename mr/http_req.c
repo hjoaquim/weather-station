@@ -116,14 +116,17 @@ void closeSocket(SOCKET socket) {
 }
 
 
-void to_server(char* msg) {
+int to_server(char* msg) {
 
 	SOCKET socket;
 
 	socket = initialize();
-	send_message(socket, msg);
+	
+	if(send_message(socket, msg)==0)
+		return 0;
+	
 	closeSocket(socket);
 
-	
+	return 1;
 
 }

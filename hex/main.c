@@ -24,6 +24,12 @@
 
 #define STR_MAX 50
 
+// How to run a MPLAB XC8 Compiler in the windows comand line:
+
+// xc8 --chip=16f877a main.c adc.c uart.c pwm.c timer0.c keypad.c i2c.c eeprom.c
+
+
+
 void delayin(long int t) {
 	int i = 0;
 	for (i; i < t; i++)
@@ -231,13 +237,13 @@ int main(void){
 				case 'L': t1 = 25; h1= 40; w1=50;break;
 				case 'M': t1 = 30; h1= 30; w1=150;break;
 				case 'H': t1 = 35; h1= 20; w1=300;break;
-				
 			}
 			
 			
 			if (user_input == 'L' || user_input == 'M'|| user_input == 'H'){
-				sprintf(str,"\nnew values\n t= %d ; h= %d, w=%d\n", t1, h1, w1);
+				sprintf(str,"\n{ new values --> t= %d ; h= %d, w=%d }\n", t1, h1, w1);
 				uart_writeText(str);
+				delayin(2000);
 			}
 			
 			

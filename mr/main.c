@@ -16,7 +16,9 @@ void isWarning(int i1,int i2, int i3, char* data){
 	
 	if(print_xml(i1,i2,i3,1))
 		printf("Added to DB\n");
-	to_server(data);
+	
+	if(to_server(data))
+		printf("Added to Server\n");
 	
 }
 
@@ -61,7 +63,8 @@ int main(){
 	HANDLE hSerial;
 	hSerial = openCOM("\\\\.\\COM2");
 	int int_1,int_2,int_3;
-	char to_send[] = "1";
+	char to_send1[] = "1";
+	char to_send2[] = "3";
 	
 	int_1= 27;
 	int_2= 50;
@@ -94,15 +97,17 @@ int main(){
 					continue;
 				}
 				
-				sscanf(read_data, "{ \"T\": %d, \"H\": %d, \"W\": %d }", &int_1, &int_2,&int_3);
-				
-				
-				printf("temperature= %d\n", int_1);
-				printf("humidity= %d\n",int_2);
-				printf("wind= %d\n", int_3);
-				
-				if(print_xml(int_1,int_2,int_3,0))
-					printf("Added to DB\n");
+				if(read_data[3]=='T'){
+					sscanf(read_data, "{ \"T\": %d, \"H\": %d, \"W\": %d }", &int_1, &int_2,&int_3);
+					
+					
+					printf("temperature= %d\n", int_1);
+					printf("humidity= %d\n",int_2);
+					printf("wind= %d\n", int_3);
+					
+					if(print_xml(int_1,int_2,int_3,0))
+						printf("Added to DB\n");
+				}
 				
 			}
 			
@@ -114,9 +119,10 @@ int main(){
 				// printf("3 - Show menu\n\n");
 				
 				
-				case '1': printf("\nRequesting current values...\n"); writeCOM(hSerial,to_send); break;
+				case '1': printf("\nRequesting current values...\n"); writeCOM(hSerial,to_send1); break;
 				case '2': change_values(hSerial); break;
-				case '3': menu();break;
+				case '3': printf("\nRequest last warning from EEPROM.\n"); writeCOM(hSerial,to_send2); break;
+				case '4': menu();break;
 				default: printf("\nInvalid option\n");
 				
 			}	

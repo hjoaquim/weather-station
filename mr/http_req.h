@@ -9,7 +9,7 @@ SOCKET initialize();
 int send_message(SOCKET s, char* msg);
 int recieve_reply(SOCKET s);
 void closeSocket(SOCKET socket);
-void to_server(char* msg);
+int to_server(char* msg);
 
 #endif
 
