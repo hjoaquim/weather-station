@@ -75,6 +75,7 @@ void init_sys(void){
 	TRISCbits.TRISC0 = 1;			// sensor infra-vermelho -> contador de impulsos -> velocidade da ventoinha
 	TRISCbits.TRISC2 = 0;           // ventoinha as output
 	PORTCbits.RC2 = 1;				// ventoinha ON
+	TRISCbits.TRISC1 = 0;			// buzzer
 
 	s.temperature = 0;
 	s.wind = 0;
@@ -144,8 +145,12 @@ void isRisk(int temp, int hum, int wvel){
 			last_risk.humidity = s.humidity ;
 			last_risk.wind = s.wind;
 		}
+		//activate buzzer
+		PORTCbits.RC1 = 1; //is risk!
 	}
-	//deactivate LED if there is any risk
+	//deactivate buzzer if there is any risk
+	else 
+		PORTCbits.RC1 = 0;
 }
 
 ////******************************
@@ -221,8 +226,8 @@ int main(void){
 				else {
 					heater_flag = 1;
 					heater(heater_flag);
-
 				}
+				
 			}
 
 			if (send_flag == 1) {
